@@ -1,2 +1,3 @@
-# ripe-sdk-components-react
-React components for RIPE SDK
+# RIPE SDK Components for React.js
+
+React components for RIPE SDK.

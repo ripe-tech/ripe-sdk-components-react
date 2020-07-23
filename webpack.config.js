@@ -69,19 +69,6 @@ module.exports = {
                 }
             },
             {
-                test: /\.(svga)$/,
-                loader: "file-loader",
-                options: {
-                    name: (path, query) => {
-                        if (process.env.NODE_ENV === "development") {
-                            return "[path][name].svg?[hash]";
-                        }
-                        return "[contenthash].svg";
-                    },
-                    esModule: false
-                }
-            },
-            {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 loader: "file-loader",
                 options: {

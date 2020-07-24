@@ -221,7 +221,7 @@ export class RipeConfigurator extends Component {
     render() {
         return (
             <div className="ripe-configurator">
-                {this.props.loader && this.loading && (
+                {this.props.loader && this.state.loading && (
                     <Loader className="loader-container" loaderStyle={this._loaderStyle()} />
                 )}
                 <div className={`configurator-wrapper ${this.loading ? "loading" : ""}`}>
@@ -232,4 +232,4 @@ export class RipeConfigurator extends Component {
     }
 }
 
-export default Loader;
+export default RipeConfigurator;

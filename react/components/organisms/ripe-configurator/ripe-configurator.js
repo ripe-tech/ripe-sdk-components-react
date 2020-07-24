@@ -142,19 +142,6 @@ export class RipeConfigurator extends Component {
         this.configurator = null;
     }
 
-    _elementDisplayed() {
-        if (!this.configurator) {
-            return false;
-        }
-        return getComputedStyle(this.configurator.element).display !== "none";
-    }
-
-    _loaderStyle() {
-        return {
-            top: this.props.size ? `${this.props.size / 2}px` : "calc(50%)"
-        };
-    }
-
     async _configRipe() {
         this.setState({ loading: true });
 
@@ -218,11 +205,26 @@ export class RipeConfigurator extends Component {
         this.configurator.resize(size);
     }
 
+    _elementDisplayed() {
+        if (!this.configurator) {
+            return false;
+        }
+        return getComputedStyle(this.configurator.element).display !== "none";
+    }
+
+    _loaderStyle() {
+        return {
+            top: this.props.size ? `${this.props.size / 2}px` : "calc(50%)"
+        };
+    }
+
     render() {
         return (
             <div className="ripe-configurator">
                 {this.props.loader && this.state.loading && (
-                    <Loader className="loader-container" loaderStyle={this._loaderStyle()} />
+                    <div className="loader-container" style={this._loaderStyle()}>
+                        <Loader className="loader" loader="ball-scale-multiple" />
+                    </div>
                 )}
                 <div className={`configurator-wrapper ${this.loading ? "loading" : ""}`}>
                     <div className="config" ref={ref => (this.configuratorRef = ref)} />

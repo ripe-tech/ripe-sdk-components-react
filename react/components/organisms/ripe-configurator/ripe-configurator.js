@@ -47,7 +47,7 @@ export class RipeConfigurator extends Component {
              */
             ripe: PropTypes.object,
             /**
-             * Callback when the frame in the configurator is changed,
+             * Callback called when the frame in the configurator is changed,
              * both by the user dragging the configurator or when a new
              * frame prop is provided.
              */
@@ -205,7 +205,7 @@ export class RipeConfigurator extends Component {
         // should be sending events it's considered to
         // be the main/master one
         if (this._elementDisplayed()) {
-            this.onUpdateFrame(value);
+            this.props.onUpdateFrame(value);
         }
     }
 

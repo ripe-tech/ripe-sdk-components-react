@@ -5,7 +5,6 @@
 .ripe-configurator > .configurator-wrapper {
     position: relative;
     text-align: center;
-    transition: opacity 0.125s ease-in;
 }
 
 .ripe-configurator > .configurator-wrapper.loading {

@@ -1,0 +1,43 @@
+.ripe-configurator {
+    position: relative;
+}
+
+.ripe-configurator > .configurator-wrapper {
+    position: relative;
+    text-align: center;
+}
+
+.ripe-configurator > .configurator-wrapper.loading {
+    opacity: 0;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator {
+    cursor: grab;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator[data-frames="1"] {
+    cursor: default;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator.drag {
+    cursor: grabbing;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator.drag[data-frames="1"] {
+    cursor: default;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator.highlight {
+    cursor: pointer;
+}
+
+.ripe-configurator > .configurator-wrapper .configurator.loading,
+.ripe-configurator > .configurator-wrapper .configurator.preloading,
+.ripe-configurator > .configurator-wrapper .configurator:not(.ready) {
+    cursor: progress;
+}
+
+.ripe-configurator > .loader-container {
+    left: calc(50%);
+    position: absolute;
+}

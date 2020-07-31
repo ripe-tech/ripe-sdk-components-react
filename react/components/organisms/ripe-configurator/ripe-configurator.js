@@ -265,9 +265,8 @@ export class RipeConfigurator extends Component {
             await this._configRipe();
         }
 
-        if (!global.ripe) {
-            global.ripe = this.state.ripeData;
-        }
+        if (global.ripe) return;
+        global.ripe = this.state.ripeData;
     }
 
     /**

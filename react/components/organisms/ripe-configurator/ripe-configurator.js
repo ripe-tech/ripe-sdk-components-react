@@ -42,6 +42,39 @@ export class RipeConfigurator extends Component {
              */
             loader: PropTypes.bool,
             /**
+             * Part of the model that is currently selected (eg: side).
+             */
+            selectedPart: PropTypes.string,
+            /**
+             * Part of the model that is currently highlighted (eg:side).
+             * Only possible if the usage of masks is enabled.
+             */
+            highlightedPart: PropTypes.string,
+            /**
+             * Configurator rotation sensitivity to the user mouse drag
+             * action. The bigger the number, more sensible it is.
+             */
+            sensitivity: PropTypes.number,
+            /**
+             * Usage of masks in the current model, necessary for
+             * the part highlighting action.
+             */
+            useMasks: PropTypes.bool,
+            /**
+             * The duration in milliseconds that the configurator frame
+             * transition should take.
+             */
+            duration: PropTypes.number,
+            /**
+             * The configurator animation style: 'simple' (fade in),
+             * 'cross' (crossfade) or 'null'.
+             */
+            configAnimate: PropTypes.string,
+            /**
+             * The format of the configurator image, (eg: png, jpg, svg, etc.).
+             */
+            format: PropTypes.string,
+            /**
              * An initialized RIPE instance form the RIPE SDK, if not defined,
              * a new SDK instance will be initialized.
              */
@@ -52,6 +85,16 @@ export class RipeConfigurator extends Component {
              * frame prop is provided.
              */
             onUpdateFrame: PropTypes.func,
+            /**
+             * Callback when a part of the model in the configurator is selected.
+             */
+            onUpdateSelectedPart: PropTypes.func,
+            /**
+             * Callback when a part of the model in the configurator is highlighted,
+             * normally with a mouse hover of by changing the prop. Only functional
+             * when masks are enabled.
+             */
+            onUpdateHighlightedPart: PropTypes.func,
             /**
              * Callback when the configurator is loading.
              */
@@ -73,8 +116,17 @@ export class RipeConfigurator extends Component {
             frame: null,
             size: null,
             loader: true,
+            selectedPart: null,
+            highlightedPart: null,
+            sensitivity: null,
+            useMasks: true,
+            duration: null,
+            configAnimate: null,
+            format: null,
             ripe: null,
             onUpdateFrame: frame => {},
+            onUpdateSelectedPart: part => {},
+            onUpdateHighlightedPart: part => {},
             onLoading: () => {},
             onLoaded: () => {}
         };
@@ -95,6 +147,18 @@ export class RipeConfigurator extends Component {
              */
             loading: true,
             /**
+             * Part of the model that is currently selected.
+             */
+            selectedPartData: this.props.selectedPart,
+            /**
+             * Part of the model that is currently highlighted.
+             */
+            highlightedPartData: this.props.highlightedPart,
+            /**
+             * Parts of the model.
+             */
+            partsData: this.props.parts,
+            /**
              * RIPE instance, which can be later initialized
              * if the given prop is not defined.
              */
@@ -109,7 +173,23 @@ export class RipeConfigurator extends Component {
 
         this.configurator = this.state.ripeData.bindConfigurator(this.configuratorRef, {
             view: this.state.frameData ? this.state.frameData.split("-")[0] : null,
-            position: this.state.frameData ? this.state.frameData.split("-")[1] : null
+            position: this.state.frameData ? this.state.frameData.split("-")[1] : null,
+            duration: this.props.duration,
+            configAnimate: this.props.configAnimate,
+            useMasks: this.props.useMasks,
+            sensitivity: this.props.sensitivity
+        });
+
+        this.state.ripeData.bind("selected_part", part => {
+            if (this.state.selectedPartData === part) return;
+            this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
+        });
+
+        this.configurator.bind("highlighted_part", part => {
+            if (this.state.highlightedPartData === part) return;
+            this.setState({ highlightedPartData: part }, () =>
+                this.props.onUpdateHighlightedPart(part)
+            );
         });
 
         this.configurator.bind("changed_frame", frame => {
@@ -133,8 +213,23 @@ export class RipeConfigurator extends Component {
             this._resize(this.props.size);
         }
         if (prevProps.frame !== this.props.frame) {
-            this._changeFrame(this.props.frame);
+            this._changeFrame(this.props.frame, prevProps.frame);
         }
+        if (JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)) {
+            this._updateParts(this.props.parts);
+        }
+        if (prevProps.selectedPart !== this.props.selectedPart) {
+            this.state.ripeData.selectPart(this.props.selectedPart);
+        }
+        if (prevProps.highlightedPart !== this.props.highlightedPart) {
+            this._highlightPart(this.props.highlightedPart, prevProps.highlightedPart);
+        }
+        if (prevProps.useMasks !== this.props.useMasks) {
+            if (!this.configurator) return;
+            this._updateUseMasks(this.props.useMasks);
+        }
+        this._updateConfiguration(this.props, prevProps);
+        this._updateConfigurator(this.props, prevProps);
     }
 
     async componentWillUnmount() {
@@ -148,7 +243,7 @@ export class RipeConfigurator extends Component {
         try {
             await this.state.ripeData.config(this.props.brand, this.props.model, {
                 version: this.props.version,
-                parts: this.props.parts
+                parts: this.state.partsData
             });
         } catch (error) {
             this.setState({ loading: false }, () => {
@@ -179,14 +274,21 @@ export class RipeConfigurator extends Component {
      * Updates the configurator, showing the provided frame
      * with possible animation.
      */
-    async _changeFrame(value) {
+    async _changeFrame(value, oldValue) {
         // in case the configurator is not currently ready
         // then avoids the operation (returns control flow)
         if (!this.configurator || !this.configurator.ready) return;
 
+        const currentView = oldValue ? oldValue.split("-")[0] : "";
+        const newView = value.split("-")[0];
+
         // runs the frame changing operation (possible animation)
         // according to the newly changed frame value
-        await this.configurator.changeFrame(value);
+        await this.configurator.changeFrame(value, {
+            type: currentView === newView ? false : this.props.configAnimate,
+            revolutionDuration: currentView === newView ? this.props.duration : null,
+            duration: this.props.duration
+        });
 
         // only the visible instance of this component
         // should be sending events it's considered to
@@ -203,6 +305,62 @@ export class RipeConfigurator extends Component {
     _resize(size) {
         if (!size || !this.configurator) return;
         this.configurator.resize(size);
+    }
+
+    _updateParts(parts) {
+        this.setState(
+            {
+                partsData: parts
+            },
+            async () => await this._configRipe()
+        );
+    }
+
+    _highlightPart(part, previousPart) {
+        this.configurator.lowlight(previousPart);
+        this.configurator.highlight(part);
+    }
+
+    _updateUseMasks(useMasks) {
+        if (useMasks) this.configurator.enableMasks();
+        else this.configurator.disableMasks();
+    }
+
+    _updateConfiguration(props, prevProps) {
+        if (
+            prevProps.brand !== props.brand ||
+            prevProps.model !== props.model ||
+            prevProps.version !== props.version
+        ) {
+            this.setState(
+                {
+                    partsData: null
+                },
+                async () => await this._configRipe()
+            );
+        }
+    }
+
+    _updateConfigurator(props, prevProps) {
+        if (
+            prevProps.sensitivity !== props.sensitivity ||
+            prevProps.duration !== props.duration ||
+            prevProps.configAnimate !== props.configAnimate ||
+            prevProps.format !== props.format
+        ) {
+            this.setState(
+                {
+                    partsData: null
+                },
+                async () =>
+                    await this.configurator.updateOptions({
+                        sensitivity: this.props.sensitivity,
+                        duration: this.props.duration,
+                        configAnimate: this.props.configAnimate,
+                        format: this.props.format
+                    })
+            );
+        }
     }
 
     _elementDisplayed() {

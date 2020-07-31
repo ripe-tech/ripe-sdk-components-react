@@ -13,6 +13,14 @@ storiesOf("Organisms", module)
         const frame = text("Frame", "side-4");
         const size = number("Size", 1000);
         const loader = boolean("Show loader", true);
+        const selectedPart = text("Selected Part", "side");
+        const highlightedPart = text("Highlighted Part", "side");
+        const sensitivity = number("Sensitivity", 40);
+        const useMasks = boolean("Use Masks", true);
+        const duration = number("Duration", 1000);
+        const configAnimate = text("Animation Configuration", "cross");
+        const format = text("Format", "png");
+
         return (
             <RipeConfigurator
                 brand={brand}
@@ -21,6 +29,13 @@ storiesOf("Organisms", module)
                 frame={frame}
                 size={size}
                 loader={loader}
+                selectedPart={selectedPart}
+                highlightedPart={highlightedPart}
+                sensitivity={sensitivity}
+                useMasks={useMasks}
+                duration={duration}
+                configAnimate={configAnimate}
+                format={format}
             />
         );
     });

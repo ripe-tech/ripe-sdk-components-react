@@ -69,7 +69,7 @@ export class RipeConfigurator extends Component {
              * The configurator animation style: 'simple' (fade in),
              * 'cross' (crossfade) or 'null'.
              */
-            configAnimate: PropTypes.string,
+            animation: PropTypes.string,
             /**
              * The format of the configurator image, (eg: png, jpg, svg, etc.).
              */
@@ -121,7 +121,7 @@ export class RipeConfigurator extends Component {
             sensitivity: null,
             useMasks: true,
             duration: null,
-            configAnimate: null,
+            animation: null,
             format: null,
             ripe: null,
             onUpdateFrame: frame => {},
@@ -175,7 +175,7 @@ export class RipeConfigurator extends Component {
             view: this.state.frameData ? this.state.frameData.split("-")[0] : null,
             position: this.state.frameData ? this.state.frameData.split("-")[1] : null,
             duration: this.props.duration,
-            configAnimate: this.props.configAnimate,
+            animation: this.props.animation,
             useMasks: this.props.useMasks,
             sensitivity: this.props.sensitivity
         });
@@ -284,7 +284,7 @@ export class RipeConfigurator extends Component {
         // runs the frame changing operation (possible animation)
         // according to the newly changed frame value
         await this.configurator.changeFrame(value, {
-            type: currentView === newView ? false : this.props.configAnimate,
+            type: currentView === newView ? false : this.props.animation,
             revolutionDuration: currentView === newView ? this.props.duration : null,
             duration: this.props.duration
         });
@@ -344,7 +344,7 @@ export class RipeConfigurator extends Component {
         if (
             prevProps.sensitivity !== props.sensitivity ||
             prevProps.duration !== props.duration ||
-            prevProps.configAnimate !== props.configAnimate ||
+            prevProps.animation !== props.animation ||
             prevProps.format !== props.format
         ) {
             this.setState(
@@ -355,7 +355,7 @@ export class RipeConfigurator extends Component {
                     await this.configurator.updateOptions({
                         sensitivity: this.props.sensitivity,
                         duration: this.props.duration,
-                        configAnimate: this.props.configAnimate,
+                        animation: this.props.animation,
                         format: this.props.format
                     })
             );

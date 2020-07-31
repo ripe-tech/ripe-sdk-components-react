@@ -18,7 +18,7 @@ storiesOf("Organisms", module)
         const sensitivity = number("Sensitivity", 40);
         const useMasks = boolean("Use Masks", true);
         const duration = number("Duration", 1000);
-        const configAnimate = text("Animation Configuration", "cross");
+        const animation = text("Animation Configuration", "cross");
         const format = text("Format", "png");
 
         return (
@@ -34,7 +34,7 @@ storiesOf("Organisms", module)
                 sensitivity={sensitivity}
                 useMasks={useMasks}
                 duration={duration}
-                configAnimate={configAnimate}
+                animation={animation}
                 format={format}
             />
         );

@@ -242,3 +242,38 @@ await this.ripe.config("dummy", "cube", {
 ```
 
 ![Multiple Images](res/images/multiple-images.png)
+
+## Pickers
+
+The pickers component allows for the customization of a model, by choosing materials and colors for its parts.
+
+The pickers can receive the following parameters:
+
+| Prop                    | Type       | Required | Description                                                                                                                                                        |
+| ----------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ripe                    | `Object`   | `true`   | Instance of Ripe SDK initialized.                                                                                                                                  |
+| onUpdateHighlightedPart | `Function` | `false`  | Callback when a part of the model in the configurator is highlighted, normally with a mouse hover of by changing the prop. Only functional when masks are enabled. |
+| onUpdateParts           | `Function` | `false`  | Callback when parts of the model are changed, meaning that a new customization was made.                                                                           |
+| onLoading               | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                  |
+| onLoaded                | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                  |
+
+The pickers component will wait for the RIPE configuration to be completed in order to have access to its parts and materials.
+
+An example of an instantiation and the correspondent view:
+
+```javascript
+this.ripe = new Ripe();
+await this.ripe.config("dummy", "cube", {
+    version: 52
+});
+```
+
+```javascript
+<RipePickers ripe={ripe} />
+```
+
+![Pickers Example](res/images/pickers.gif)
+
+The pickers can interact with an existing configurator, by using the same RIPE instance:
+
+![Pickers with Configurator Example](res/images/pickers_configurator.gif)

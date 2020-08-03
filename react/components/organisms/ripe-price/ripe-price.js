@@ -79,10 +79,6 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
              */
             priceText: null,
             /**
-             * Binding to the RIPE price changing event.
-             */
-            priceBind: null,
-            /**
              * Parts of the model.
              */
             partsData: this.props.parts,
@@ -104,8 +100,7 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
 
         await this._setupRipe();
 
-        const priceBind = this.state.ripeData.bind("price", value => this._onPriceChange(value));
-        this.setState({ priceBind: priceBind });
+        this.priceBind = this.state.ripeData.bind("price", value => this._onPriceChange(value));
     }
 
     componentDidUpdate(prevProps) {
@@ -116,8 +111,8 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
     }
 
     async componentWillUnmount() {
-        if (this.state.priceBind) await this.state.ripeData.unbind("price", this.state.priceBind);
-        this.setState({ priceBind: null });
+        if (this.priceBind) await this.state.ripeData.unbind("price", this.priceBind);
+        this.priceBind = null;
     }
 
     async _configRipe() {

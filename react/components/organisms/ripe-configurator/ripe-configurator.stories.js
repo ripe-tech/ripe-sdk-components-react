@@ -12,7 +12,7 @@ storiesOf("Organisms", module)
         const version = number("Version", 52);
         const frame = text("Frame", "side-4");
         const size = number("Size", 1000);
-        const loader = boolean("Show loader", true);
+        const loader = boolean("Loader", true);
         const selectedPart = text("Selected Part", "side");
         const highlightedPart = text("Highlighted Part", "side");
         const sensitivity = number("Sensitivity", 40);

@@ -18,7 +18,7 @@ storiesOf("Organisms", module)
         const sensitivity = number("Sensitivity", 40);
         const useMasks = boolean("Use Masks", true);
         const duration = number("Duration", 1000);
-        const animation = text("Animation Configuration", "cross");
+        const animation = text("Animation", "cross");
         const format = text("Format", "png");
 
         return (

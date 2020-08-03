@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Ripe } from "ripe-sdk";
+import { Ripe, ripe } from "ripe-sdk";
 
 import { Loader } from "../../atoms";
 
@@ -265,6 +265,8 @@ export class RipeConfigurator extends Component {
             await this._configRipe();
         }
 
+        // in case the global RIPE instance is not set then
+        // updates it with the current one
         if (global.ripe) return;
         global.ripe = this.state.ripeData;
     }
@@ -273,19 +275,21 @@ export class RipeConfigurator extends Component {
      * Updates the configurator, showing the provided frame
      * with possible animation.
      */
-    async _changeFrame(value, oldValue) {
+    async _changeFrame(value, previous) {
         // in case the configurator is not currently ready
         // then avoids the operation (returns control flow)
         if (!this.configurator || !this.configurator.ready) return;
 
-        const currentView = oldValue ? oldValue.split("-")[0] : "";
-        const newView = value.split("-")[0];
+        // extracts the view part of both the previous and the
+        // current frame to be used for change view comparison
+        const previousView = previous ? ripe.parseFrameKey(previous)[0] : "";
+        const view = ripe.parseFrameKey(value)[0];
 
         // runs the frame changing operation (possible animation)
         // according to the newly changed frame value
         await this.configurator.changeFrame(value, {
-            type: currentView === newView ? false : this.props.animation,
-            revolutionDuration: currentView === newView ? this.props.duration : null,
+            type: view === previousView ? false : this.props.animation,
+            revolutionDuration: view === previousView ? this.props.duration : null,
             duration: this.props.duration
         });
 

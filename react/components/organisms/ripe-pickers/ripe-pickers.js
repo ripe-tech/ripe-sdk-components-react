@@ -57,9 +57,13 @@ export class RipePickers extends Component {
              */
             selectedMaterial: null,
             /**
-             * Color selected for the currently selected part and  of the model.
+             * Color selected for the currently selected part and of the model.
              */
             selectedColor: null,
+            /**
+             * Model's customization options, which contains parts, materials
+             * and colors.
+             */
             options: {},
             /**
              * Flag that controls if the initial loading process for

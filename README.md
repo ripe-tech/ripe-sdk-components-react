@@ -313,3 +313,86 @@ await this.ripe.config("dummy", "cube", {
 The pickers can interact with an existing configurator, by using the same RIPE instance:
 
 ![Pickers with Configurator Example](res/images/pickers_configurator.gif)
+
+## Price
+
+The price component allows for the visualization of the price of a model, according to the currency provided.
+
+The price can receive the following parameters:
+
+| Prop          | Type       | Required | Description                                                                                                                |
+| ------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| brand         | `String`   | `true`   | The brand of the model.                                                                                                    |
+| model         | `String`   | `true`   | The name of the model.                                                                                                     |
+| version       | `Number`   | `true`   | The version of the build.                                                                                                  |
+| parts         | `Object`   | `false`  | The model's customization.                                                                                                 |
+| currency      | `String`   | `true`   | The `ISO 4217` currency code in which the price will be displayed.                                                         |
+| ripe          | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                               |
+| onUpdatePrice | `Function` | `false`  | Callback when the price of the model changes. It can be triggered when the currency is changed or the model and its parts. |
+| onLoading     | `Function` | `false`  | Callback called when the configurator is loading.                                                                          |
+| onLoaded      | `Function` | `false`  | Callback called when the configurator has loaded.                                                                          |
+
+An example of an instantiation and the correspondent view:
+
+```javascript
+<RipePrice brand={"dummy"} model={"cube"} version={52} currency={"USD"} />
+```
+
+![Price Example](res/images/price.png)
+
+Different customizations can result in different prices. Below is an example of a more expensive customization in both dollars and euros:
+
+```javascript
+<RipePrice
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    currency={"EUR"}
+    parts={{
+        side: {
+            color: "black",
+            material: "crocodile_cbe",
+            face: "side"
+        },
+        shadow: {
+            color: "default",
+            hidden: true,
+            material: "default"
+        },
+        top0_bottom: {
+            color: "fuchsia",
+            face: "side",
+            material: "suede_cbe"
+        }
+    }}
+/>
+```
+
+```javascript
+<RipePrice
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    currency={"USD"}
+    parts={{
+        side: {
+            color: "black",
+            material: "crocodile_cbe",
+            face: "side"
+        },
+        shadow: {
+            color: "default",
+            hidden: true,
+            material: "default"
+        },
+        top0_bottom: {
+            color: "fuchsia",
+            face: "side",
+            material: "suede_cbe"
+        }
+    }}
+/>
+```
+
+![Price Complex Example EUR](res/images/price-complex-eur.png)
+![Price Complex Example USD](res/images/price-complex-usd.png)

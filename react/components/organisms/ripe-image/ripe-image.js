@@ -119,10 +119,6 @@ export class RipeImage extends Component {
              */
             loading: true,
             /**
-             * Parts of the model.
-             */
-            partsData: this.props.parts,
-            /**
              * RIPE instance, which can be later initialized
              * if the given prop is not defined.
              */
@@ -144,6 +140,7 @@ export class RipeImage extends Component {
             initialsGroup: this.props.initialsGroup,
             initialsBuilder: this.props.initialsBuilder
         });
+        this.image.update(this.props.state);
     }
 
     async componentDidUpdate(prevProps) {
@@ -152,9 +149,6 @@ export class RipeImage extends Component {
         }
         if (prevProps.frame !== this.props.frame) {
             this.image.setFrame(this.props.frame);
-        }
-        if (JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)) {
-            this._updateParts(this.props.parts);
         }
         if (prevProps.showInitials !== this.props.showInitials) {
             this.image.setShowInitials(this.props.showInitials);
@@ -165,8 +159,8 @@ export class RipeImage extends Component {
         if (JSON.stringify(prevProps.state) !== JSON.stringify(this.props.state)) {
             await this.image.update(this.props.state);
         }
-        this._updateConfiguration(this.props, prevProps);
-        this._updateConfigurator(this.props, prevProps);
+        await this._updateConfiguration(this.props, prevProps);
+        await this._updateConfigurator(this.props, prevProps);
     }
 
     async componentWillUnmount() {
@@ -180,7 +174,8 @@ export class RipeImage extends Component {
         try {
             await this.state.ripeData.config(this.props.brand, this.props.model, {
                 version: this.props.version,
-                parts: this.state.partsData
+                parts: this.props.parts,
+                safe: true
             });
         } catch (error) {
             this.setState({ loading: false }, () => {
@@ -197,7 +192,12 @@ export class RipeImage extends Component {
      */
     async _setupRipe() {
         if (!this.state.ripeData) {
-            this.setState({ ripeData: new Ripe() }, async () => await this._configRipe());
+            await new Promise(resolve => {
+                this.setState({ ripeData: new Ripe() }, async () => {
+                    await this._configRipe();
+                    resolve();
+                });
+            });
         } else {
             await this._configRipe();
         }
@@ -206,61 +206,32 @@ export class RipeImage extends Component {
         global.ripe = this.state.ripeData;
     }
 
-    _updateParts(parts) {
-        this.setState(
-            {
-                partsData: parts
-            },
-            async () => await this._configRipe()
-        );
-    }
-
-    _updateConfiguration(props, prevProps) {
+    async _updateConfiguration(props, prevProps) {
         if (
             prevProps.brand !== props.brand ||
             prevProps.model !== props.model ||
-            prevProps.version !== props.version
+            prevProps.version !== props.version ||
+            JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () => await this._configRipe()
-            );
+            await this._configRipe();
         }
     }
 
-    _updateConfigurator(props, prevProps) {
+    async _updateConfigurator(props, prevProps) {
         if (
             prevProps.format !== props.format ||
             prevProps.crop !== props.crop ||
             prevProps.initialsGroup !== props.initialsGroup
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () => {
-                    await this.image.updateOptions(
-                        {
-                            format: this.props.format,
-                            crop: this.props.crop,
-                            initialsGroup: this.props.initialsGroup
-                        },
-                        false
-                    );
-                    await this.image.update(this.props.state);
-                }
-            );
+            await this.image.updateOptions({
+                format: this.props.format,
+                crop: this.props.crop,
+                initialsGroup: this.props.initialsGroup
+            });
         }
     }
 
     _onLoad() {
-        // updates the image if there is an initial state provided,
-        // showing initials when the image is first rendered. This
-        // only executes after rendering the component the first time.
-        if (this.props.state && this.state.loading) this.image.update(this.props.state);
-
         this.setState({ loading: false }, () => this.props.onLoaded());
     }
 

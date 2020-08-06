@@ -10,7 +10,7 @@
         }
     ],
     "routes": [
-        { "src": "/", "dest": "/styleguide/index.html" },
-        { "src": "/storybook", "dest": "/storybook/index.html" }
+        { "src": "/storybook", "dest": "/storybook/index.html" },
+        { "src": "/(.*)", "dest": "/styleguide/$1" }
     ]
 }

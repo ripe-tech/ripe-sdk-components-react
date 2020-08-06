@@ -23,7 +23,7 @@
         "build-storybook": "build-storybook -c .storybook -o storybook",
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js --mode development --watch --hot",
         "docs": "styleguidist server",
-        "docs:build": "tyleguidist build",
+        "docs:build": "styleguidist build",
         "lint": "npm run lint:base && npm run lint:stylelint",
         "lint-fix": "npm run lint-fix:base && npm run lint-fix:stylelint",
         "lint-fix:base": "eslint \"./**/*.{js,vue}\" --fix",

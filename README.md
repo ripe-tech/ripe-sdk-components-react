@@ -33,7 +33,7 @@ The configurator can receive the following parameters:
 
 An example of an instantiation and the correspondent view:
 
-```javascript
+```javascript static
 <RipeConfigurator
     brand={"dummy"}
     model={"cube"}
@@ -49,7 +49,7 @@ An example of an instantiation and the correspondent view:
 
 The frame can be controlled externally to the component, by changing the prop `frame`:
 
-```javascript
+```javascript static
 <RipeConfigurator
     brand={"dummy"}
     model={"cube"}
@@ -66,7 +66,7 @@ The frame can be controlled externally to the component, by changing the prop `f
 
 The customization of the model can also be provided, with the prop `parts`:
 
-```javascript
+```javascript static
 <RipeConfigurator
     brand={"dummy"}
     model={"cube"}
@@ -101,7 +101,7 @@ The customization of the model can also be provided, with the prop `parts`:
 The sensitivity, duration and other configurator attributes when first building the component. This attributes in addition to brand, model and version can later be changed, causing the configurator to load again.
 It is also possible to define the highlighted part of the configurator, which will use masks to identify it. However, this highlighted part will only show after the first build of the configurator.
 
-```javascript
+```javascript static
 <RipeConfigurator
     brand={"dummy"}
     model={"cube"}
@@ -127,7 +127,7 @@ It is also possible to define the highlighted part of the configurator, which wi
 
 There can be more than one configurator using the same instance of Ripe SDK:
 
-```javascript
+```javascript static
 <RipeConfigurator
     brand={"dummy"}
     model={"cube"}
@@ -153,7 +153,7 @@ There can be more than one configurator using the same instance of Ripe SDK:
 
 Which uses a Ripe SDK instance that can be initialized like this:
 
-```javascript
+```javascript static
 this.ripe = new Ripe();
 await this.ripe.config("dummy", "cube", {
     version: 52
@@ -188,7 +188,7 @@ The image can receive the following parameters:
 
 An example of an instantiation and the correspondent view:
 
-```javascript
+```javascript static
 <RipeImage
     brand={"dummy"}
     model={"cube"}
@@ -203,7 +203,7 @@ An example of an instantiation and the correspondent view:
 
 Similar to the configurator, the frame can be controlled externally to the component, by changing the prop `frame`:
 
-```javascript
+```javascript static
 <RipeImage
     brand={"dummy"}
     model={"cube"}
@@ -219,7 +219,7 @@ Similar to the configurator, the frame can be controlled externally to the compo
 
 The customization of the model can also be provided, with the `prop` parts:
 
-```javascript
+```javascript static
 <RipeImage
     brand={"dummy"}
     model={"cube"}
@@ -255,7 +255,7 @@ By setting the `show-initials` to `true` and providing an `initials-group` and `
 
 A `state` example:
 
-```javascript
+```javascript static
 const state = {
     initialsExtra: {
         main: {
@@ -266,7 +266,7 @@ const state = {
 };
 ```
 
-```javascript
+```javascript static
 <RipeImage
     brand={"dummy"}
     model={"cube"}
@@ -287,7 +287,7 @@ It is also possible to provide a `initialsBuilder` function, that allows for a m
 
 There can be more than one image using the same instance of Ripe SDK:
 
-```javascript
+```javascript static
 <RipeImage
     brand={"dummy"}
     model={"cube"}
@@ -311,7 +311,7 @@ There can be more than one image using the same instance of Ripe SDK:
 
 Which uses a Ripe SDK instance that can be initialized like this:
 
-```javascript
+```javascript static
 this.ripe = new Ripe();
 await this.ripe.config("dummy", "cube", {
     version: 52
@@ -338,14 +338,14 @@ The pickers component will wait for the RIPE configuration to be completed in or
 
 An example of an instantiation and the correspondent view:
 
-```javascript
+```javascript static
 this.ripe = new Ripe();
 await this.ripe.config("dummy", "cube", {
     version: 52
 });
 ```
 
-```javascript
+```javascript static
 <RipePickers ripe={ripe} />
 ```
 
@@ -375,7 +375,7 @@ The price can receive the following parameters:
 
 An example of an instantiation and the correspondent view:
 
-```javascript
+```javascript static
 <RipePrice brand={"dummy"} model={"cube"} version={52} currency={"USD"} />
 ```
 
@@ -383,7 +383,7 @@ An example of an instantiation and the correspondent view:
 
 Different customizations can result in different prices. Below is an example of a more expensive customization in both dollars and euros:
 
-```javascript
+```javascript static
 <RipePrice
     brand={"dummy"}
     model={"cube"}
@@ -409,7 +409,7 @@ Different customizations can result in different prices. Below is an example of 
 />
 ```
 
-```javascript
+```javascript static
 <RipePrice
     brand={"dummy"}
     model={"cube"}

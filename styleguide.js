@@ -3,3 +3,5 @@ if (window.location.hostname.endsWith("vercel.app")) {
     script.href = "/styleguide/";
     document.getElementsByTagName("head")[0].appendChild(script);
 }
+
+console.log("LOADED!", window.location.hostname.endsWith("vercel.app"));

@@ -30,7 +30,7 @@
         "lint-fix:stylelint": "stylelint \"./**/*.{css,scss,vue}\" --fix",
         "lint:base": "eslint \"./**/*.{js,vue}\"",
         "lint:stylelint": "stylelint \"./**/*.{css,scss,vue}\"",
-        "now-build": "npm run build && npm run build-storybook && npm run docs:build",
+        "now-build": "npm run build-storybook && npm run docs:build",
         "prettier": "prettier \"./**/*.{js,json}\" --write",
         "pretty": "npm run prettier && npm run lint-fix && npm run stylelint-fix && npm run svgo",
         "storybook": "start-storybook -p 9001 -c .storybook",

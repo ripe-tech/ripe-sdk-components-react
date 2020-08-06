@@ -155,10 +155,6 @@ export class RipeConfigurator extends Component {
              */
             highlightedPartData: this.props.highlightedPart,
             /**
-             * Parts of the model.
-             */
-            partsData: this.props.parts,
-            /**
              * RIPE instance, which can be later initialized
              * if the given prop is not defined.
              */
@@ -208,15 +204,12 @@ export class RipeConfigurator extends Component {
         this._resize(this.props.size);
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps.size !== this.props.size) {
             this._resize(this.props.size);
         }
         if (prevProps.frame !== this.props.frame) {
             this._changeFrame(this.props.frame, prevProps.frame);
-        }
-        if (JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)) {
-            this._updateParts(this.props.parts);
         }
         if (prevProps.selectedPart !== this.props.selectedPart) {
             this.state.ripeData.selectPart(this.props.selectedPart);
@@ -228,8 +221,8 @@ export class RipeConfigurator extends Component {
             if (!this.configurator) return;
             this._updateUseMasks(this.props.useMasks);
         }
-        this._updateConfiguration(this.props, prevProps);
-        this._updateConfigurator(this.props, prevProps);
+        await this._updateConfiguration(this.props, prevProps);
+        await this._updateConfigurator(this.props, prevProps);
     }
 
     async componentWillUnmount() {
@@ -243,7 +236,7 @@ export class RipeConfigurator extends Component {
         try {
             await this.state.ripeData.config(this.props.brand, this.props.model, {
                 version: this.props.version,
-                parts: this.state.partsData
+                parts: this.props.parts
             });
         } catch (error) {
             this.setState({ loading: false }, () => {
@@ -310,15 +303,6 @@ export class RipeConfigurator extends Component {
         this.configurator.resize(size);
     }
 
-    _updateParts(parts) {
-        this.setState(
-            {
-                partsData: parts
-            },
-            async () => await this._configRipe()
-        );
-    }
-
     _highlightPart(part, previousPart) {
         this.configurator.lowlight(previousPart);
         this.configurator.highlight(part);
@@ -329,40 +313,30 @@ export class RipeConfigurator extends Component {
         else this.configurator.disableMasks();
     }
 
-    _updateConfiguration(props, prevProps) {
+    async _updateConfiguration(props, prevProps) {
         if (
             prevProps.brand !== props.brand ||
             prevProps.model !== props.model ||
-            prevProps.version !== props.version
+            prevProps.version !== props.version ||
+            JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () => await this._configRipe()
-            );
+            await this._configRipe();
         }
     }
 
-    _updateConfigurator(props, prevProps) {
+    async _updateConfigurator(props, prevProps) {
         if (
             prevProps.sensitivity !== props.sensitivity ||
             prevProps.duration !== props.duration ||
             prevProps.animation !== props.animation ||
             prevProps.format !== props.format
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () =>
-                    await this.configurator.updateOptions({
-                        sensitivity: this.props.sensitivity,
-                        duration: this.props.duration,
-                        animation: this.props.animation,
-                        format: this.props.format
-                    })
-            );
+            await this.configurator.updateOptions({
+                sensitivity: this.props.sensitivity,
+                duration: this.props.duration,
+                animation: this.props.animation,
+                format: this.props.format
+            });
         }
     }
 

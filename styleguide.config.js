@@ -1,4 +1,7 @@
+const path = require("path");
+
 module.exports = {
+    require: [path.join(__dirname, "./styleguide.js")],
     styleguideDir: "dist/styleguide",
     webpackConfig: Object.assign({}, require("./webpack.config"), {
         externals: {}

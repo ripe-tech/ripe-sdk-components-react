@@ -5,12 +5,11 @@
             "src": "package.json",
             "use": "@now/static-build",
             "config": {
-                "distDir": "dist"
+                "distDir": "styleguide"
             }
         }
     ],
     "routes": [
-        { "src": "/", "dest": "/styleguide/index.html" },
         { "src": "/storybook", "dest": "/storybook/index.html" }
     ]
 }

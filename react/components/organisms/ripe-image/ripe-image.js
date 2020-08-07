@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Ripe } from "ripe-sdk";
+import { mix } from "yonius";
+
+import { LogicMixin } from "../../../mixins";
 
 import "./ripe-image.css";
 
-export class RipeImage extends Component {
+export class RipeImage extends mix(Component).with(LogicMixin) {
     static get propTypes() {
         return {
             /**
@@ -73,6 +75,12 @@ export class RipeImage extends Component {
              */
             name: PropTypes.string,
             /**
+             * Callback called when the parts of the model are changed. This
+             * can be due to restrictions and rules of the model when applying
+             * a certain customization.
+             */
+            onUpdateParts: PropTypes.func,
+            /**
              * Callback when the configurator is loading.
              */
             onLoading: PropTypes.func,
@@ -100,6 +108,7 @@ export class RipeImage extends Component {
             state: {},
             ripe: null,
             name: null,
+            onUpdateParts: parts => {},
             onLoading: () => {},
             onLoaded: () => {}
         };
@@ -119,6 +128,10 @@ export class RipeImage extends Component {
              */
             loading: true,
             /**
+             * Parts of the model.
+             */
+            partsData: this.props.parts,
+            /**
              * RIPE instance, which can be later initialized
              * if the given prop is not defined.
              */
@@ -130,6 +143,17 @@ export class RipeImage extends Component {
         this.props.onLoading();
 
         await this._setupRipe();
+
+        // saves the model parts after the RIPE configuration so that
+        // possible changes due to restrictions can be communicated
+        // to the parent component
+        this.setState({ partsData: Object.assign({}, this.state.ripeData.parts) }, () =>
+            this.props.onUpdateParts(this.state.ripeData.parts)
+        );
+
+        this.partsBind = this.state.ripeData.bind("parts", parts => {
+            this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
+        });
 
         this.image = this.state.ripeData.bindImage(this.imageRef, {
             frame: this.props.frame,
@@ -150,6 +174,9 @@ export class RipeImage extends Component {
         if (prevProps.frame !== this.props.frame) {
             this.image.setFrame(this.props.frame);
         }
+        if (!this._equalParts(prevProps.parts, this.props.parts)) {
+            this._updateParts(this.props.parts);
+        }
         if (prevProps.showInitials !== this.props.showInitials) {
             this.image.setShowInitials(this.props.showInitials);
         }
@@ -165,53 +192,25 @@ export class RipeImage extends Component {
 
     async componentWillUnmount() {
         if (this.image) await this.state.ripeData.unbindImage(this.image);
-        this.setState({ image: null });
     }
 
-    async _configRipe() {
-        this.setState({ loading: true });
-
-        try {
-            await this.state.ripeData.config(this.props.brand, this.props.model, {
-                version: this.props.version,
-                parts: this.props.parts,
-                safe: true
-            });
-        } catch (error) {
-            this.setState({ loading: false }, () => {
-                this.props.onLoaded();
-            });
-        }
-    }
-
-    /**
-     * Initializes RIPE instance if it does not exists and
-     * configures it with the given brand, model, version
-     * and parts. If a RIPE instance is provided, it will
-     * be used without further configuration.
-     */
-    async _setupRipe() {
-        if (!this.state.ripeData) {
-            await new Promise(resolve => {
-                this.setState({ ripeData: new Ripe() }, async () => {
-                    await this._configRipe();
-                    resolve();
-                });
-            });
-        } else {
-            await this._configRipe();
-        }
-
-        if (global.ripe) return;
-        global.ripe = this.state.ripeData;
+    _updateParts(parts) {
+        this.setState(
+            {
+                partsData: parts
+            },
+            async () => {
+                this.props.onUpdateParts(parts);
+                await this._configRipe();
+            }
+        );
     }
 
     async _updateConfiguration(props, prevProps) {
         if (
             prevProps.brand !== props.brand ||
             prevProps.model !== props.model ||
-            prevProps.version !== props.version ||
-            JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)
+            prevProps.version !== props.version
         ) {
             await this._configRipe();
         }

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Ripe } from "ripe-sdk";
 import { mix } from "yonius";
 
-import { MoneyMixin } from "../../../mixins";
+import { LogicMixin, MoneyMixin } from "../../../mixins";
 
-export class RipePrice extends mix(Component).with(MoneyMixin) {
+export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
     static get propTypes() {
         return {
             /**
@@ -35,6 +34,12 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
              */
             ripe: PropTypes.object,
             /**
+             * Callback called when the parts of the model are changed. This
+             * can be due to restrictions and rules of the model when applying
+             * a certain customization.
+             */
+            onUpdateParts: PropTypes.func,
+            /**
              * Callback when the price of the model changes. It can be triggered
              * when the currency is changed or the model and its parts.
              */
@@ -58,6 +63,7 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
             version: null,
             parts: null,
             ripe: null,
+            onUpdateParts: parts => {},
             onUpdatePrice: price => {},
             onLoading: () => {},
             onLoaded: () => {}
@@ -100,14 +106,28 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
 
         await this._setupRipe();
 
+        // saves the model parts after the RIPE configuration so that
+        // possible changes due to restrictions can be communicated
+        // to the parent component
+        this.setState({ partsData: Object.assign({}, this.state.ripeData.parts) }, () =>
+            this.props.onUpdateParts(this.state.ripeData.parts)
+        );
+
+        this.state.ripeData.bind("parts", parts => {
+            this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
+        });
+
         this.priceBind = this.state.ripeData.bind("price", value => this._onPriceChange(value));
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps.currency !== this.props.currency) {
             this._configRipe();
         }
-        this._updateConfiguration(this.props, prevProps);
+        if (!this._equalParts(prevProps.parts, this.props.parts)) {
+            this._updateParts(this.props.parts);
+        }
+        await this._updateConfiguration(this.props, prevProps);
     }
 
     async componentWillUnmount() {
@@ -115,55 +135,29 @@ export class RipePrice extends mix(Component).with(MoneyMixin) {
         this.priceBind = null;
     }
 
-    async _configRipe() {
-        this.setState({ loading: true });
-
-        try {
-            await this.state.ripeData.config(this.props.brand, this.props.model, {
-                version: this.props.version,
-                parts: this.props.parts,
-                currency: this.props.currency.toUpperCase()
-            });
-        } catch (error) {
-            this.setState({ loading: false }, () => {
-                this.props.onLoaded();
-            });
-        }
-    }
-
-    /**
-     * Initializes RIPE instance if it does not exists and
-     * configures it with the given brand, model, version
-     * and parts. If a RIPE instance is provided, it will
-     * be used without further configuration.
-     */
-    async _setupRipe() {
-        if (!this.state.ripeData) {
-            this.setState({ ripeData: new Ripe() }, async () => await this._configRipe());
-        } else {
-            await this._configRipe();
-        }
-
-        if (global.ripe) return;
-        global.ripe = this.state.ripeData;
-    }
-
     _priceText(value) {
         return this.formatMoney(value, this.props.currency);
     }
 
-    _updateConfiguration(props, prevProps) {
+    _updateParts(parts) {
+        this.setState(
+            {
+                partsData: parts
+            },
+            async () => {
+                this.props.onUpdateParts(parts);
+                await this._configRipe();
+            }
+        );
+    }
+
+    async _updateConfiguration(props, prevProps) {
         if (
             prevProps.brand !== props.brand ||
             prevProps.model !== props.model ||
             prevProps.version !== props.version
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () => await this._configRipe()
-            );
+            await this._configRipe();
         }
     }
 

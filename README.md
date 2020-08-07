@@ -22,10 +22,11 @@ The configurator can receive the following parameters:
 | sensitivity             | `Number`   | `false`  | Configurator rotation sensitivity to the user mouse drag action. The bigger the number, more sensible it is.                                                       |
 | useMasks                | `Boolean`  | `false`  | Usage of masks in the current model, necessary for the part highlighting action.                                                                                   |
 | duration                | `Number`   | `false`  | The duration in milliseconds that the configurator frame transition should take.                                                                                   |
-| animation           | `String`   | `false`  | The configurator animation style: 'simple' (fade in), 'cross' (crossfade) or 'null'.                                                                               |
+| animation               | `String`   | `false`  | The configurator animation style: 'simple' (fade in), 'cross' (crossfade) or 'null'.                                                                               |
 | format                  | `String`   | `false`  | The format of the configurator image, (eg: png, jpg, svg, etc.).                                                                                                   |
 | ripe                    | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                                       |
 | onUpdateFrame           | `Function` | `false`  | Callback called when the frame in the configurator is changed.                                                                                                     |
+| onUpdateParts           | `Function` | `false`  | Callback called when the parts of the model are changed. This can be due to restrictions and rules of the model when applying a certain customization.             |
 | onUpdateSelectedPart    | `Function` | `false`  | Callback when a part of the model in the configurator is selected.                                                                                                 |
 | onUpdateHighlightedPart | `Function` | `false`  | Callback when a part of the model in the configurator is highlighted, normally with a mouse hover of by changing the prop. Only functional when masks are enabled. |
 | onLoading               | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                  |
@@ -40,6 +41,7 @@ An example of an instantiation and the correspondent view:
     version={52}
     size={1000}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -57,6 +59,7 @@ The frame can be controlled externally to the component, by changing the prop `f
     size={1000}
     frame={"top-0"}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -91,6 +94,7 @@ The customization of the model can also be provided, with the prop `parts`:
         }
     }}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -116,6 +120,7 @@ It is also possible to define the highlighted part of the configurator, which wi
     animation={"cross"}
     format={"png"}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onUpdateSelectedPart={part => {}}
     onUpdateHighlightedPart={part => {}}
     onLoading={() => {}}
@@ -135,6 +140,7 @@ There can be more than one configurator using the same instance of Ripe SDK:
     size={500}
     ripe={this.ripe}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -146,6 +152,7 @@ There can be more than one configurator using the same instance of Ripe SDK:
     frame={"side-10"}
     ripe={this.ripe}
     onUpdateFrame={frame => {}}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -183,6 +190,7 @@ The image can receive the following parameters:
 | initialsBuilder | `Function` | `false`  | A function that receives the initials and engraving as strings and the img element that will be used and returns a map with the initials and a profile list.                                               |
 | state           | `Object`   | `false`  | An object containing the state of the personalization. For each group of the model it can contain the initials and the corresponding engraving (eg. { main: { initials: "AB", engraving: "style:grey" }}). |
 | ripe            | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                                                                               |
+| onUpdateParts   | `Function` | `false`  | Callback called when the parts of the model are changed. This can be due to restrictions and rules of the model when applying a certain customization.                                                     |
 | onLoading       | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                                                          |
 | onLoaded        | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                                                          |
 
@@ -194,6 +202,7 @@ An example of an instantiation and the correspondent view:
     model={"cube"}
     version={52}
     size={500}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -210,6 +219,7 @@ Similar to the configurator, the frame can be controlled externally to the compo
     version={52}
     size={1000}
     frame={"top-0"}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -243,6 +253,7 @@ The customization of the model can also be provided, with the `prop` parts:
             material: "leather_cbe"
         }
     }}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -294,6 +305,7 @@ There can be more than one image using the same instance of Ripe SDK:
     version={52}
     size={500}
     ripe={this.ripe}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -304,6 +316,7 @@ There can be more than one image using the same instance of Ripe SDK:
     size={500}
     frame={"side-10"}
     ripe={this.ripe}
+    onUpdateParts={parts => {}}
     onLoading={() => {}}
     onLoaded={() => {}}
 />
@@ -361,17 +374,18 @@ The price component allows for the visualization of the price of a model, accord
 
 The price can receive the following parameters:
 
-| Prop          | Type       | Required | Description                                                                                                                |
-| ------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| brand         | `String`   | `true`   | The brand of the model.                                                                                                    |
-| model         | `String`   | `true`   | The name of the model.                                                                                                     |
-| version       | `Number`   | `true`   | The version of the build.                                                                                                  |
-| parts         | `Object`   | `false`  | The model's customization.                                                                                                 |
-| currency      | `String`   | `true`   | The `ISO 4217` currency code in which the price will be displayed.                                                         |
-| ripe          | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                               |
-| onUpdatePrice | `Function` | `false`  | Callback when the price of the model changes. It can be triggered when the currency is changed or the model and its parts. |
-| onLoading     | `Function` | `false`  | Callback called when the configurator is loading.                                                                          |
-| onLoaded      | `Function` | `false`  | Callback called when the configurator has loaded.                                                                          |
+| Prop          | Type       | Required | Description                                                                                                                                            |
+| ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| brand         | `String`   | `true`   | The brand of the model.                                                                                                                                |
+| model         | `String`   | `true`   | The name of the model.                                                                                                                                 |
+| version       | `Number`   | `true`   | The version of the build.                                                                                                                              |
+| parts         | `Object`   | `false`  | The model's customization.                                                                                                                             |
+| currency      | `String`   | `true`   | The `ISO 4217` currency code in which the price will be displayed.                                                                                     |
+| ripe          | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                           |
+| onUpdateParts | `Function` | `false`  | Callback called when the parts of the model are changed. This can be due to restrictions and rules of the model when applying a certain customization. |
+| onUpdatePrice | `Function` | `false`  | Callback when the price of the model changes. It can be triggered when the currency is changed or the model and its parts.                             |
+| onLoading     | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                      |
+| onLoaded      | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                      |
 
 An example of an instantiation and the correspondent view:
 

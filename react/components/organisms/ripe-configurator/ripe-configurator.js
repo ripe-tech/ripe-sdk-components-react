@@ -193,6 +193,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
         });
 
         this.state.ripeData.bind("parts", parts => {
+            if (this._equalParts(parts, this.state.partsData)) return;
             this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
         });
 

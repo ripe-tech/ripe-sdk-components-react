@@ -114,6 +114,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
         );
 
         this.state.ripeData.bind("parts", parts => {
+            if (this._equalParts(parts, this.state.partsData)) return;
             this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
         });
 

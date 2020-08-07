@@ -9,7 +9,7 @@ export const LogicMixin = superclass =>
                 await this.state.ripeData.config(this.props.brand, this.props.model, {
                     version: this.props.version,
                     parts: this.props.parts,
-                    currency: this.props.currency?.toUpperCase()
+                    currency: this.props.currency ? this.props.currency.toUpperCase() : null
                 });
             } catch (error) {
                 this.setState({ loading: false }, () => {

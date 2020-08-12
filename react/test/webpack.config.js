@@ -1,8 +1,7 @@
-const config = require("uxf-webpack/config/webpack.config.full");
+const config = require("../../webpack.config");
 
 config.mode = "development";
 config.target = "node";
-config.externals = ["react"];
 
 config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
 config.output.devtoolFallbackModuleFilenameTemplate = "[absolute-resource-path]?[hash]";
@@ -13,37 +12,43 @@ config.module.rules = config.module.rules.filter(
         !rule.use ||
         rule.use.every(loader => {
             const name = typeof loader === "object" ? loader.loader : loader;
-            return name !== "babel-loader";
+            return !["babel-loader", "style-loader"].includes(name);
         })
 );
-config.module.rules.push({
-    test: /\.js$/,
-    exclude: /node_modules/,
-    use: [
-        {
-            loader: "babel-loader",
-            query: {
-                presets: [
-                    [
-                        "@babel/preset-env",
-                        {
-                            targets: {
-                                node: "current"
+config.module.rules.push(
+    {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [
+            {
+                loader: "babel-loader",
+                query: {
+                    presets: [
+                        [
+                            "@babel/preset-env",
+                            {
+                                targets: {
+                                    node: "current"
+                                }
                             }
-                        }
-                    ],
-                    [
-                        "@babel/preset-react",
-                        {
-                            targets: {
-                                node: "current"
+                        ],
+                        [
+                            "@babel/preset-react",
+                            {
+                                targets: {
+                                    node: "current"
+                                }
                             }
-                        }
+                        ]
                     ]
-                ]
+                }
             }
-        }
-    ]
-});
+        ]
+    },
+    {
+        test: /\.(css|scss|sass)$/,
+        use: ["null-loader"]
+    }
+);
 
 module.exports = config;

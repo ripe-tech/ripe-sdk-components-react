@@ -21,6 +21,10 @@ export const LogicMixin = superclass =>
             global.ripe = this.state.ripeData;
         }
 
+        /**
+         * Configures the RIPE instance with the current brand,
+         * model, version and parts defined in instance.
+         */
         async _configRipe() {
             this.setState({ loading: true });
 
@@ -45,7 +49,6 @@ export const LogicMixin = superclass =>
          * part to be changed with an object containing both the material
          * and the color for the part.
          */
-
         async _setPartsRipe(parts) {
             await this.state.ripeData.setParts(parts);
         }

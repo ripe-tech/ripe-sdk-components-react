@@ -2,10 +2,6 @@ import { Ripe } from "ripe-sdk";
 
 export const LogicMixin = superclass =>
     class extends superclass {
-        async _setPartsRipe(parts) {
-            await this.state.ripeData.setParts(parts);
-        }
-
         /**
          * Initializes RIPE instance if it does not exists and
          * configures it with the given brand, model, version
@@ -39,6 +35,19 @@ export const LogicMixin = superclass =>
                     this.props.onLoaded();
                 });
             }
+        }
+
+        /**
+         * Runs a series of part changes as a transaction changing
+         * the current model's configuration.
+         *
+         * @param {Object} parts An object that associated the name of the
+         * part to be changed with an object containing both the material
+         * and the color for the part.
+         */
+
+        async _setPartsRipe(parts) {
+            await this.state.ripeData.setParts(parts);
         }
 
         _equalParts(first, second) {

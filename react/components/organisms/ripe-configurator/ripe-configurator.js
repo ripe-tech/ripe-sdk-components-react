@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Ripe, ripe } from "ripe-sdk";
+import { ripe } from "ripe-sdk";
+import { mix } from "yonius";
 
+import { LogicMixin } from "../../../mixins";
 import { Loader } from "../../atoms";
 
 import "ripe-sdk/src/css/ripe.css";
 import "./ripe-configurator.css";
 
-export class RipeConfigurator extends Component {
+export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     static get propTypes() {
         return {
             /**
@@ -86,6 +88,12 @@ export class RipeConfigurator extends Component {
              */
             onUpdateFrame: PropTypes.func,
             /**
+             * Callback called when the parts of the model are changed. This
+             * can be due to restrictions and rules of the model when applying
+             * a certain customization.
+             */
+            onUpdateParts: PropTypes.func,
+            /**
              * Callback when a part of the model in the configurator is selected.
              */
             onUpdateSelectedPart: PropTypes.func,
@@ -125,6 +133,7 @@ export class RipeConfigurator extends Component {
             format: null,
             ripe: null,
             onUpdateFrame: frame => {},
+            onUpdateParts: parts => {},
             onUpdateSelectedPart: part => {},
             onUpdateHighlightedPart: part => {},
             onLoading: () => {},
@@ -171,6 +180,23 @@ export class RipeConfigurator extends Component {
 
         await this._setupRipe();
 
+        // saves the model parts after the RIPE configuration so that
+        // possible changes due to restrictions can be communicated
+        // to the parent component
+        this.setState({ partsData: Object.assign({}, this.state.ripeData.parts) }, () =>
+            this.props.onUpdateParts(this.state.ripeData.parts)
+        );
+
+        this.state.ripeData.bind("selected_part", part => {
+            if (this.state.selectedPartData === part) return;
+            this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
+        });
+
+        this.state.ripeData.bind("parts", parts => {
+            if (this._equalParts(parts, this.state.partsData)) return;
+            this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
+        });
+
         this.configurator = this.state.ripeData.bindConfigurator(this.configuratorRef, {
             view: this.state.frameData ? this.state.frameData.split("-")[0] : null,
             position: this.state.frameData ? this.state.frameData.split("-")[1] : null,
@@ -178,11 +204,6 @@ export class RipeConfigurator extends Component {
             animation: this.props.animation,
             useMasks: this.props.useMasks,
             sensitivity: this.props.sensitivity
-        });
-
-        this.state.ripeData.bind("selected_part", part => {
-            if (this.state.selectedPartData === part) return;
-            this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
         });
 
         this.configurator.bind("highlighted_part", part => {
@@ -208,14 +229,14 @@ export class RipeConfigurator extends Component {
         this._resize(this.props.size);
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps.size !== this.props.size) {
             this._resize(this.props.size);
         }
         if (prevProps.frame !== this.props.frame) {
             this._changeFrame(this.props.frame, prevProps.frame);
         }
-        if (JSON.stringify(prevProps.parts) !== JSON.stringify(this.props.parts)) {
+        if (!this._equalParts(prevProps.parts, this.props.parts)) {
             this._updateParts(this.props.parts);
         }
         if (prevProps.selectedPart !== this.props.selectedPart) {
@@ -228,47 +249,13 @@ export class RipeConfigurator extends Component {
             if (!this.configurator) return;
             this._updateUseMasks(this.props.useMasks);
         }
-        this._updateConfiguration(this.props, prevProps);
-        this._updateConfigurator(this.props, prevProps);
+        await this._updateConfiguration(this.props, prevProps);
+        await this._updateConfigurator(this.props, prevProps);
     }
 
     async componentWillUnmount() {
         if (this.configurator) await this.state.ripeData.unbindConfigurator(this.configurator);
         this.configurator = null;
-    }
-
-    async _configRipe() {
-        this.setState({ loading: true });
-
-        try {
-            await this.state.ripeData.config(this.props.brand, this.props.model, {
-                version: this.props.version,
-                parts: this.state.partsData
-            });
-        } catch (error) {
-            this.setState({ loading: false }, () => {
-                this.props.onLoaded();
-            });
-        }
-    }
-
-    /**
-     * Initializes RIPE instance if it does not exists and
-     * configures it with the given brand, model, version
-     * and parts. If a RIPE instance is provided, it will
-     * be used without further configuration.
-     */
-    async _setupRipe() {
-        if (!this.state.ripeData) {
-            this.setState({ ripeData: new Ripe() }, async () => await this._configRipe());
-        } else {
-            await this._configRipe();
-        }
-
-        // in case the global RIPE instance is not set then
-        // updates it with the current one
-        if (global.ripe) return;
-        global.ripe = this.state.ripeData;
     }
 
     /**
@@ -310,15 +297,6 @@ export class RipeConfigurator extends Component {
         this.configurator.resize(size);
     }
 
-    _updateParts(parts) {
-        this.setState(
-            {
-                partsData: parts
-            },
-            async () => await this._configRipe()
-        );
-    }
-
     _highlightPart(part, previousPart) {
         this.configurator.lowlight(previousPart);
         this.configurator.highlight(part);
@@ -329,40 +307,41 @@ export class RipeConfigurator extends Component {
         else this.configurator.disableMasks();
     }
 
-    _updateConfiguration(props, prevProps) {
+    _updateParts(parts) {
+        this.setState(
+            {
+                partsData: parts
+            },
+            async () => {
+                await this.props.onUpdateParts(parts);
+                await this._setPartsRipe(parts);
+            }
+        );
+    }
+
+    async _updateConfiguration(props, prevProps) {
         if (
             prevProps.brand !== props.brand ||
             prevProps.model !== props.model ||
             prevProps.version !== props.version
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () => await this._configRipe()
-            );
+            await this._configRipe();
         }
     }
 
-    _updateConfigurator(props, prevProps) {
+    async _updateConfigurator(props, prevProps) {
         if (
             prevProps.sensitivity !== props.sensitivity ||
             prevProps.duration !== props.duration ||
             prevProps.animation !== props.animation ||
             prevProps.format !== props.format
         ) {
-            this.setState(
-                {
-                    partsData: null
-                },
-                async () =>
-                    await this.configurator.updateOptions({
-                        sensitivity: this.props.sensitivity,
-                        duration: this.props.duration,
-                        animation: this.props.animation,
-                        format: this.props.format
-                    })
-            );
+            await this.configurator.updateOptions({
+                sensitivity: this.props.sensitivity,
+                duration: this.props.duration,
+                animation: this.props.animation,
+                format: this.props.format
+            });
         }
     }
 

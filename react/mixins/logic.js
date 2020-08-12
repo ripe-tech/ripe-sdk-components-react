@@ -2,20 +2,8 @@ import { Ripe } from "ripe-sdk";
 
 export const LogicMixin = superclass =>
     class extends superclass {
-        async _configRipe() {
-            this.setState({ loading: true });
-
-            try {
-                await this.state.ripeData.config(this.props.brand, this.props.model, {
-                    version: this.props.version,
-                    parts: this.props.parts,
-                    currency: this.props.currency ? this.props.currency.toUpperCase() : null
-                });
-            } catch (error) {
-                this.setState({ loading: false }, () => {
-                    this.props.onLoaded();
-                });
-            }
+        async _setPartsRipe(parts) {
+            await this.state.ripeData.setParts(parts);
         }
 
         /**
@@ -35,6 +23,22 @@ export const LogicMixin = superclass =>
             // updates it with the current one
             if (global.ripe) return;
             global.ripe = this.state.ripeData;
+        }
+
+        async _configRipe() {
+            this.setState({ loading: true });
+
+            try {
+                await this.state.ripeData.config(this.props.brand, this.props.model, {
+                    version: this.props.version,
+                    parts: this.props.parts,
+                    currency: this.props.currency ? this.props.currency.toUpperCase() : null
+                });
+            } catch (error) {
+                this.setState({ loading: false }, () => {
+                    this.props.onLoaded();
+                });
+            }
         }
 
         _equalParts(first, second) {

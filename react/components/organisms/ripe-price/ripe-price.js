@@ -146,8 +146,8 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
                 partsData: parts
             },
             async () => {
-                this.props.onUpdateParts(parts);
-                await this._configRipe();
+                await this.props.onUpdateParts(parts);
+                await this._setPartsRipe(parts);
             }
         );
     }

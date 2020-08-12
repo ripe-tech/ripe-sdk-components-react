@@ -313,8 +313,8 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
                 partsData: parts
             },
             async () => {
-                this.props.onUpdateParts(parts);
-                await this._configRipe();
+                await this.props.onUpdateParts(parts);
+                await this._setPartsRipe(parts);
             }
         );
     }

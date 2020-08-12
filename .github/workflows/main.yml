@@ -14,5 +14,5 @@ jobs:
       - run: npm install
       - run: npm install --only=dev
       - run: npm run build
-      - run: npm run lint-all
-      - run: npm run test-all
+      - run: npm run lint
+      - run: npm run test

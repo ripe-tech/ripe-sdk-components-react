@@ -1,4 +1,4 @@
-# RIPE SDK Components for React.js
+<h1><a href="https://tech.platforme.com"><img src="res/logo.svg" alt="RIPE SDK Components for React.js" height="60" style="height: 60px;"></a></h1>
 
 React components for [RIPE SDK](https://github.com/ripe-tech/ripe-sdk).
 

@@ -152,8 +152,14 @@ export class RipeImageZoom extends Component {
                     crop={this.props.crop}
                     showInitials={this.props.showInitials}
                     initialsGroup={this.props.initialsGroup}
+                    initialsBuilder={this.props.initialsBuilder}
                     state={this.props.state}
+                    ripe={this.props.ripe}
+                    name={this.props.name}
                     style={this._zoomStyle()}
+                    onUpdateParts={this.props.onUpdateParts}
+                    onLoading={this.props.onLoading}
+                    onLoaded={this.props.onLoaded}
                 />
             </div>
         );

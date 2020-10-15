@@ -75,6 +75,10 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             name: PropTypes.string,
             /**
+             * Style to be applied to the image, used for zoom application.
+             */
+            style: PropTypes.object,
+            /**
              * Callback called when the parts of the model are changed. This
              * can be due to restrictions and rules of the model when applying
              * a certain customization.
@@ -108,6 +112,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             state: {},
             ripe: null,
             name: null,
+            style: {},
             onUpdateParts: parts => {},
             onLoading: () => {},
             onLoaded: () => {}
@@ -242,6 +247,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
                 alt={this.props.name || this.props.model}
                 ref={ref => (this.imageRef = ref)}
                 onLoad={() => this._onLoad()}
+                style={this.props.style}
             />
         );
     }

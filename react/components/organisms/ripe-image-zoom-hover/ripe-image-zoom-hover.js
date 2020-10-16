@@ -199,11 +199,12 @@ export class RipeImageZoomHover extends Component {
     };
 
     onMouseWheel = event => {
+        event.stopPropagation();
         this.zoomScroll(event);
     };
 
-    onEndHover = event => {
-        this.endHover(event, event.target);
+    onEndHover = () => {
+        this.endHover();
     };
 
     _getPivotCoordinates(event, target) {

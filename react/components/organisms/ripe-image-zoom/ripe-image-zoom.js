@@ -78,7 +78,7 @@ export class RipeImageZoom extends Component {
              */
             zoom: PropTypes.number,
             /**
-             * The z and y coordinates of the pivot point where the zoom will be applied to.
+             * The x and y coordinates of the pivot point where the zoom will be applied to.
              */
             pivot: PropTypes.object,
             /**
@@ -121,12 +121,6 @@ export class RipeImageZoom extends Component {
             onLoading: () => {},
             onLoaded: () => {}
         };
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {};
     }
 
     _zoomStyle() {

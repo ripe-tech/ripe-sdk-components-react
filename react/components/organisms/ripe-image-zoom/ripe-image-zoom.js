@@ -141,25 +141,7 @@ export class RipeImageZoom extends Component {
     render() {
         return (
             <div className="ripe-image-zoom">
-                <RipeImage
-                    brand={this.props.brand}
-                    model={this.props.model}
-                    version={this.props.version}
-                    frame={this.props.frame}
-                    size={this.props.size}
-                    format={this.props.format}
-                    crop={this.props.crop}
-                    showInitials={this.props.showInitials}
-                    initialsGroup={this.props.initialsGroup}
-                    initialsBuilder={this.props.initialsBuilder}
-                    state={this.props.state}
-                    ripe={this.props.ripe}
-                    name={this.props.name}
-                    style={this._zoomStyle()}
-                    onUpdateParts={this.props.onUpdateParts}
-                    onLoading={this.props.onLoading}
-                    onLoaded={this.props.onLoaded}
-                />
+                <RipeImage {...this.props} style={this._zoomStyle()} />
             </div>
         );
     }

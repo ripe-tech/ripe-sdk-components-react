@@ -86,6 +86,10 @@ export class RipeImageZoomHover extends Component {
              */
             scrollSensitivity: PropTypes.number,
             /**
+             * Enables zooming out of the image with the mouse scroll.
+             */
+            zoomOut: PropTypes.bool,
+            /**
              * Callback called when the parts of the model are changed. This
              * can be due to restrictions and rules of the model when applying
              * a certain customization.
@@ -122,6 +126,7 @@ export class RipeImageZoomHover extends Component {
             zoom: 100,
             scrollZoom: false,
             scrollSensitivity: 1,
+            zoomOut: false,
             onUpdateParts: parts => {},
             onLoading: () => {},
             onLoaded: () => {}
@@ -183,8 +188,17 @@ export class RipeImageZoomHover extends Component {
     }
 
     zoomScroll(event) {
+        // checks if zooming on hover is enabled or if the mouse is
+        // hovering the image
         if (!this.state.hover || !this.props.scrollZoom) return;
+
         const updatedZoom = this.state.zoomData + -1 * this.props.scrollSensitivity * event.deltaY;
+
+        // checks if the zooming out feature is disabled, if so the
+        // zooming out the image farther that the original size of it
+        // is not possible
+        if (!this.props.zoomOut && updatedZoom <= 100) return;
+
         this.setState({
             zoomData: updatedZoom
         });

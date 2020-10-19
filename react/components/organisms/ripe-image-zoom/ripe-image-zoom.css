@@ -1,4 +1,5 @@
 .ripe-image-zoom {
+    cursor: "zoom-in";
     display: inline-block;
     overflow: hidden;
 }

@@ -78,7 +78,7 @@ export class RipeImageZoom extends Component {
              */
             zoom: PropTypes.number,
             /**
-             * The z and y coordinates of the pivot point where the zoom will be applied to.
+             * The x and y coordinates of the pivot point where the zoom will be applied to.
              */
             pivot: PropTypes.object,
             /**
@@ -123,18 +123,17 @@ export class RipeImageZoom extends Component {
         };
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {};
-    }
-
     _zoomStyle() {
-        const base = { transform: `scale(${this.props.zoom / 100})` };
+        const base = {
+            transformOrigin: "0px 0px 0px",
+            transform: `scale(${this.props.zoom / 100})`
+        };
         if (this.props.pivot) {
-            base.transform += ` translate(${-1 * this.props.pivot.x}px, ${
-                -1 * this.props.pivot.y
-            }px)`;
+            // revert the translate after scaling the image so that the scaling
+            // appears centered on the pivot
+            base.transform = `translate(${this.props.pivot.x}px, ${this.props.pivot.y}px) ${
+                base.transform
+            } translate(${-1 * this.props.pivot.x}px, ${-1 * this.props.pivot.y}px)`;
         }
         return base;
     }

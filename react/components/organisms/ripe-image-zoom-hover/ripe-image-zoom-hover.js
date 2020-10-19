@@ -144,16 +144,7 @@ export class RipeImageZoomHover extends Component {
     }
 
     startHover(event, target) {
-        target = document.querySelector(".ripe-image-zoom-hover");
         const pivotCoordinates = this._getPivotCoordinates(event, target);
-        if (
-            pivotCoordinates.x > target.offsetWidth / 2 ||
-            pivotCoordinates.y > target.offsetHeight / 2
-        ) {
-            this.endHover();
-            return;
-        }
-
         this.setState({
             hover: true,
             pivot: pivotCoordinates,
@@ -162,18 +153,9 @@ export class RipeImageZoomHover extends Component {
     }
 
     moveHover(event, target) {
-        target = document.querySelector(".ripe-image-zoom-hover");
         if (!this.state.hover) return;
 
         const pivotCoordinates = this._getPivotCoordinates(event, target);
-        if (
-            pivotCoordinates.x > target.offsetWidth / 2 ||
-            pivotCoordinates.y > target.offsetHeight / 2
-        ) {
-            this.endHover();
-            return;
-        }
-
         this.setState({
             pivot: pivotCoordinates
         });
@@ -194,13 +176,17 @@ export class RipeImageZoomHover extends Component {
 
         const updatedZoom = this.state.zoomData + -1 * this.props.scrollSensitivity * event.deltaY;
 
-        // checks if the zooming out feature is disabled, if so the
-        // zooming out the image farther that the original size of it
-        // is not possible
-        if (!this.props.zoomOut && updatedZoom <= 100) return;
+        // checks if the zooming out feature is disabled, if so only
+        // allow zooming out until the base scaling of the image (100%)
+        if (!this.props.zoomOut && updatedZoom <= 100) {
+            this.setState({
+                zoomData: 100
+            });
+            return;
+        }
 
         this.setState({
-            zoomData: updatedZoom
+            zoomData: updatedZoom < 10 ? 10 : updatedZoom
         });
     }
 
@@ -222,8 +208,8 @@ export class RipeImageZoomHover extends Component {
     };
 
     _getPivotCoordinates(event, target) {
-        const x = event.pageX - target.offsetLeft - target.offsetWidth / 2;
-        const y = event.pageY - target.offsetTop - target.offsetHeight / 2;
+        const x = event.pageX - target.offsetLeft;
+        const y = event.pageY - target.offsetTop;
         return { x: x, y: y };
     }
 

@@ -16,6 +16,7 @@ storiesOf("Organisms", module)
         const crop = boolean("Crop", true);
         const showInitials = boolean("Show Initials", true);
         const zoom = number("Zoom", 140);
+        const maxZoom = number("Max Zoom", 500);
         const scrollZoom = boolean("Enable Scroll Zoom", true);
         const scrollSensitivity = number("Scroll Zoom Sensitivity", 1);
         const state = {
@@ -40,6 +41,7 @@ storiesOf("Organisms", module)
                 initialsGroup={"main"}
                 state={state}
                 zoom={zoom}
+                maxZoom={maxZoom}
                 scrollZoom={scrollZoom}
                 scrollSensitivity={scrollSensitivity}
             />

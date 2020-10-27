@@ -333,6 +333,39 @@ await this.ripe.config("dummy", "cube", {
 
 ![Multiple Images](res/images/multiple-images.png)
 
+### Image with Zoom
+
+In cases where it is necessary to see details in the image, it is possible to use the `RipeImageZoom`, which applies a given zoom value to the image, centered on a pivot point.
+
+The zoom value is in percentage, and will not go under the `10%` value, which is the minimum to get a visible image. Below is a comparison between the normal image component and one with zoom.
+
+```javascript static
+<RipeImageZoom
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    size={1000}
+    frame={"top-0"}
+    onUpdateParts={parts => {}}
+    onLoading={() => {}}
+    onLoaded={() => {}}
+/>
+<RipeImageZoom
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    size={1000}
+    frame={"top-0"}
+    zoom={140}
+    pivot={{ x: 40, y: 30 }}
+    onUpdateParts={parts => {}}
+    onLoading={() => {}}
+    onLoaded={() => {}}
+/>
+```
+
+![Comparison between image with and without zoom](res/images/image-zoom.png)
+
 ## Pickers
 
 The pickers component allows for the customization of a model, by choosing materials and colors for its parts.

@@ -3,7 +3,7 @@ module.exports = {
     parserOptions: {
         requireConfigFile: false,
         babelOptions: {
-            plugins: ["@babel/plugin-syntax-jsx"]
+            plugins: ["@babel/plugin-syntax-jsx", "@babel/plugin-proposal-class-properties"]
         }
     },
     settings: {

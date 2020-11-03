@@ -1,6 +1,10 @@
 module.exports = {
     extends: ["hive", "hive/prettier", "eslint:recommended", "plugin:react/recommended"],
-    parser: "babel-eslint",
+    parserOptions: {
+        babelOptions: {
+            plugins: ["@babel/plugin-syntax-jsx", "@babel/plugin-proposal-class-properties"]
+        }
+    },
     settings: {
         react: {
             createClass: "createReactClass",

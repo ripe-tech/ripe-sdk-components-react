@@ -127,8 +127,8 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
     }
 
     async componentDidUpdate(prevProps) {
-        if (this.props.config && prevProps.currency !== this.props.currency) {
-            this._configRipe();
+        if (prevProps.currency !== this.props.currency) {
+            if (this.props.config) this._configRipe();
         }
         if (!this._equalParts(prevProps.parts, this.props.parts)) {
             this._updateParts(this.props.parts);
@@ -159,12 +159,11 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
 
     async _updateConfiguration(props, prevProps) {
         if (
-            props.config &&
-            (prevProps.brand !== props.brand ||
-                prevProps.model !== props.model ||
-                prevProps.version !== props.version)
+            prevProps.brand !== props.brand ||
+            prevProps.model !== props.model ||
+            prevProps.version !== props.version
         ) {
-            await this._configRipe();
+            if (props.config) await this._configRipe();
         }
     }
 

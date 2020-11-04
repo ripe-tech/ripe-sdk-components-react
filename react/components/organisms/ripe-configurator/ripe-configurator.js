@@ -326,12 +326,11 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
 
     async _updateConfiguration(props, prevProps) {
         if (
-            props.config &&
-            (prevProps.brand !== props.brand ||
-                prevProps.model !== props.model ||
-                prevProps.version !== props.version)
+            prevProps.brand !== props.brand ||
+            prevProps.model !== props.model ||
+            prevProps.version !== props.version
         ) {
-            await this._configRipe();
+            if (props.config) await this._configRipe();
         }
     }
 

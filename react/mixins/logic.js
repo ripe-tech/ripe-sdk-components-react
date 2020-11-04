@@ -34,8 +34,6 @@ export const LogicMixin = superclass =>
          * model, version and parts defined in instance.
          */
         async _configRipe() {
-            if (!this.props.config) return;
-
             this.setState({ loading: true });
 
             try {

@@ -22,6 +22,10 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             version: PropTypes.number.isRequired,
             /**
+             * Indicates that the component should apply the config internally.
+             */
+            config: PropTypes.bool,
+            /**
              * The parts of the customized build as a dictionary mapping the
              * name of the part to an object of material and color.
              */
@@ -97,6 +101,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             brand: null,
             model: null,
             version: null,
+            config: true,
             parts: null,
             frame: null,
             size: null,
@@ -209,9 +214,10 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
 
     async _updateConfiguration(props, prevProps) {
         if (
-            prevProps.brand !== props.brand ||
-            prevProps.model !== props.model ||
-            prevProps.version !== props.version
+            props.config &&
+            (prevProps.brand !== props.brand ||
+                prevProps.model !== props.model ||
+                prevProps.version !== props.version)
         ) {
             await this._configRipe();
         }

@@ -16,6 +16,10 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
              */
             model: PropTypes.string.isRequired,
             /**
+             * Indicates that the component should apply the config internally.
+             */
+            config: PropTypes.bool,
+            /**
              * The version of the build.
              */
             version: PropTypes.number.isRequired,
@@ -60,6 +64,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
         return {
             brand: null,
             model: null,
+            config: true,
             version: null,
             parts: null,
             ripe: null,
@@ -122,7 +127,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
     }
 
     async componentDidUpdate(prevProps) {
-        if (prevProps.currency !== this.props.currency) {
+        if (this.props.config && prevProps.currency !== this.props.currency) {
             this._configRipe();
         }
         if (!this._equalParts(prevProps.parts, this.props.parts)) {
@@ -154,9 +159,10 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
 
     async _updateConfiguration(props, prevProps) {
         if (
-            prevProps.brand !== props.brand ||
-            prevProps.model !== props.model ||
-            prevProps.version !== props.version
+            props.config &&
+            (prevProps.brand !== props.brand ||
+                prevProps.model !== props.model ||
+                prevProps.version !== props.version)
         ) {
             await this._configRipe();
         }

@@ -20,7 +20,7 @@
     "scripts": {
         "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.config.js",
         "build-dev": "cross-env NODE_ENV=development webpack --mode development --config webpack.config.js",
-        "build-storybook": "build-storybook -c .storybook -o dist/storybook --no-dll",
+        "build-storybook": "build-storybook -c .storybook -o dist/storybook",
         "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js --mode development --watch --hot",
         "docs": "styleguidist server",
         "docs:build": "styleguidist build",

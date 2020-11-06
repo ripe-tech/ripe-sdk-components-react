@@ -12,15 +12,15 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             /**
              * The brand of the model.
              */
-            brand: PropTypes.string.isRequired,
+            brand: PropTypes.string,
             /**
              * The name of the model.
              */
-            model: PropTypes.string.isRequired,
+            model: PropTypes.string,
             /**
              * The version of the build.
              */
-            version: PropTypes.number.isRequired,
+            version: PropTypes.number,
             /**
              * Indicates that the component should apply the config internally.
              */

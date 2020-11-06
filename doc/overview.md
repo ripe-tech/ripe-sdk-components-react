@@ -8,9 +8,10 @@ The configurator can receive the following parameters:
 
 | Prop                    | Type       | Required | Description                                                                                                                                                        |
 | ----------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| brand                   | `String`   | `true`   | The brand of the model.                                                                                                                                            |
-| model                   | `String`   | `true`   | The name of the model.                                                                                                                                             |
-| version                 | `Number`   | `true`   | The version of the build.                                                                                                                                          |
+| brand                   | `String`   | `false`  | The brand of the model.                                                                                                                                            |
+| model                   | `String`   | `false`  | The name of the model.                                                                                                                                             |
+| version                 | `Number`   | `false`  | The version of the build.                                                                                                                                          |
+| config                  | `Boolean`  | `false`  | Indicates that the component should apply the config internally on component initialization.                                                                       |
 | parts                   | `Object`   | `false`  | The model's customization.                                                                                                                                         |
 | frame                   | `String`   | `false`  | The name of the frame to be shown in the configurator. For example, frame `1` on `side` would be `side-1`, and a `top` frame would be `top-1`.                     |
 | size                    | `Number`   | `false`  | The size (in pixels) of the configurator. If not defined, the configurator will use all the screen space available.                                                |
@@ -175,9 +176,10 @@ The image can receive the following parameters:
 
 | Prop            | Type       | Required | Description                                                                                                                                                                                                |
 | --------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| brand           | `String`   | `true`   | The brand of the model.                                                                                                                                                                                    |
-| model           | `String`   | `true`   | The name of the model.                                                                                                                                                                                     |
-| version         | `Number`   | `true`   | The version of the build.                                                                                                                                                                                  |
+| brand           | `String`   | `false`  | The brand of the model.                                                                                                                                                                                    |
+| model           | `String`   | `false`  | The name of the model.                                                                                                                                                                                     |
+| version         | `Number`   | `false`  | The version of the build.                                                                                                                                                                                  |
+| config          | `Boolean`  | `false`  | Indicates that the component should apply the config internally on component initialization.                                                                                                               |
 | parts           | `Object`   | `false`  | The model's customization.                                                                                                                                                                                 |
 | frame           | `String`   | `false`  | The name of the frame to be shown in the configurator. For example, frame `1` on `side` would be `side-1`, and a `top` frame would be `top-1`.                                                             |
 | size            | `Number`   | `false`  | The size (in pixels) of the configurator. If not defined, the configurator will use all the screen space available.                                                                                        |
@@ -331,41 +333,6 @@ await this.ripe.config("dummy", "cube", {
 
 ![Multiple Images](/res/images/multiple-images.png)
 
-## Pickers
-
-The pickers component allows for the customization of a model, by choosing materials and colors for its parts.
-
-The pickers can receive the following parameters:
-
-| Prop                    | Type       | Required | Description                                                                                                                                                        |
-| ----------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ripe                    | `Object`   | `true`   | Instance of Ripe SDK initialized.                                                                                                                                  |
-| onUpdateHighlightedPart | `Function` | `false`  | Callback when a part of the model in the configurator is highlighted, normally with a mouse hover of by changing the prop. Only functional when masks are enabled. |
-| onUpdateParts           | `Function` | `false`  | Callback when parts of the model are changed, meaning that a new customization was made.                                                                           |
-| onLoading               | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                  |
-| onLoaded                | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                  |
-
-The pickers component will wait for the RIPE configuration to be completed in order to have access to its parts and materials.
-
-An example of an instantiation and the correspondent view:
-
-```javascript static
-this.ripe = new Ripe();
-await this.ripe.config("dummy", "cube", {
-    version: 52
-});
-```
-
-```javascript static
-<RipePickers ripe={ripe} />
-```
-
-![Pickers Example](/res/images/pickers.gif)
-
-The pickers can interact with an existing configurator, by using the same RIPE instance:
-
-![Pickers with Configurator Example](/res/images/pickers_configurator.gif)
-
 ## Price
 
 The price component allows for the visualization of the price of a model, according to the currency provided.
@@ -374,9 +341,10 @@ The price can receive the following parameters:
 
 | Prop          | Type       | Required | Description                                                                                                                                            |
 | ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| brand         | `String`   | `true`   | The brand of the model.                                                                                                                                |
-| model         | `String`   | `true`   | The name of the model.                                                                                                                                 |
-| version       | `Number`   | `true`   | The version of the build.                                                                                                                              |
+| brand         | `String`   | `false`  | The brand of the model.                                                                                                                                |
+| model         | `String`   | `false`  | The name of the model.                                                                                                                                 |
+| version       | `Number`   | `false`  | The version of the build.                                                                                                                              |
+| config        | `Boolean`  | `false`  | Indicates that the component should apply the config internally on component initialization.                                                           |
 | parts         | `Object`   | `false`  | The model's customization.                                                                                                                             |
 | currency      | `String`   | `true`   | The `ISO 4217` currency code in which the price will be displayed.                                                                                     |
 | ripe          | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                           |
@@ -449,3 +417,38 @@ Different customizations can result in different prices. Below is an example of 
 
 ![Price Complex Example EUR](/res/images/price-complex-eur.png)
 ![Price Complex Example USD](/res/images/price-complex-usd.png)
+
+## Pickers
+
+The pickers component allows for the customization of a model, by choosing materials and colors for its parts.
+
+The pickers can receive the following parameters:
+
+| Prop                    | Type       | Required | Description                                                                                                                                                        |
+| ----------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ripe                    | `Object`   | `true`   | Instance of Ripe SDK initialized.                                                                                                                                  |
+| onUpdateHighlightedPart | `Function` | `false`  | Callback when a part of the model in the configurator is highlighted, normally with a mouse hover of by changing the prop. Only functional when masks are enabled. |
+| onUpdateParts           | `Function` | `false`  | Callback when parts of the model are changed, meaning that a new customization was made.                                                                           |
+| onLoading               | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                  |
+| onLoaded                | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                  |
+
+The pickers component will wait for the RIPE configuration to be completed in order to have access to its parts and materials.
+
+An example of an instantiation and the correspondent view:
+
+```javascript static
+this.ripe = new Ripe();
+await this.ripe.config("dummy", "cube", {
+    version: 52
+});
+```
+
+```javascript static
+<RipePickers ripe={ripe} />
+```
+
+![Pickers Example](/res/images/pickers.gif)
+
+The pickers can interact with an existing configurator, by using the same RIPE instance:
+
+![Pickers with Configurator Example](/res/images/pickers_configurator.gif)

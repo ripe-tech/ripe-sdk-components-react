@@ -61,7 +61,7 @@ module.exports = {
                 options: {
                     name: (path, query) => {
                         if (process.env.NODE_ENV === "development") {
-                            return "[path][name].[ext]?[hash]";
+                            return "[path][name].[ext]?[fullhash]";
                         }
                         return "[contenthash].[ext]";
                     },

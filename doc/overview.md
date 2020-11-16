@@ -333,7 +333,7 @@ await this.ripe.config("dummy", "cube", {
 
 ![Multiple Images](/res/images/multiple-images.png)
 
-### Image with Zoom
+## Image with Zoom
 
 In cases where it is necessary to see details in the image, it is possible to use the `RipeImageZoom`, which applies a given zoom value to the image, centered on a pivot point.
 
@@ -364,7 +364,7 @@ The image with zoom can receive the following parameters:
 The zoom value is in percentage, and will not go under the `10%` value, which is the minimum to get a visible image. Below is a comparison between the normal image component and one with zoom.
 
 ```javascript static
-<RipeImageZoom
+<RipeImage
     brand={"dummy"}
     model={"cube"}
     version={52}

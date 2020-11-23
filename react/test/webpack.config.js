@@ -40,7 +40,8 @@ config.module.rules.push(
                                 }
                             }
                         ]
-                    ]
+                    ],
+                    plugins: ["@babel/plugin-proposal-class-properties"]
                 }
             }
         ]

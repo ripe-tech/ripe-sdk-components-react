@@ -390,6 +390,58 @@ The zoom value is in percentage, and will not go under the `10%` value, which is
 
 ![Comparison between image with and without zoom](/res/images/image-zoom.png)
 
+## Image with Zoom on Hover
+
+To allow a more interactive experience with zoom, it is possible to use the `RipeImageZoomHover`, which applies a given zoom value to the image when hovering above it, centering it one the mouse position.
+It is also possible to enable the scroll wheel to increase and decrease the zoom value.
+
+| Prop              | Type       | Required | Description                                                                                                                                                                                                |
+| ----------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| brand             | `String`   | `false`  | The brand of the model.                                                                                                                                                                                    |
+| model             | `String`   | `false`  | The name of the model.                                                                                                                                                                                     |
+| version           | `Number`   | `false`  | The version of the build.                                                                                                                                                                                  |
+| config            | `Boolean`  | `false`  | Indicates that the component should apply the config internally on component initialization.                                                                                                               |
+| parts             | `Object`   | `false`  | The model's customization.                                                                                                                                                                                 |
+| frame             | `String`   | `false`  | The name of the frame to be shown in the configurator. For example, frame `1` on `side` would be `side-1`, and a `top` frame would be `top-1`.                                                             |
+| size              | `Number`   | `false`  | The size (in pixels) of the configurator. If not defined, the configurator will use all the screen space available.                                                                                        |
+| format            | `String`   | `false`  | The format of the image, (eg: png, jpg, svg, etc.). Defaults to 'png'.                                                                                                                                     |
+| crop              | `Boolean`  | `false`  | Indicates that the image composition is to be cropped. Crops the current image according to the minimal possible bounding box in both x and y axis.                                                        |
+| showInitials      | `Boolean`  | `false`  | Indicates if the personalization should be shown. Defaults to `false`.                                                                                                                                     |
+| initialsGroup     | `String`   | `false`  | The group in which the image initials belongs to.                                                                                                                                                          |
+| initialsBuilder   | `Function` | `false`  | A function that receives the initials and engraving as strings and the img element that will be used and returns a map with the initials and a profile list.                                               |
+| zoom              | `Number`   | `false`  | Zoom percentage that controls the level of zoom over the original image, defaults to `100`.                                                                                                                |
+| maxZoom           | `Number`   | `false`  | The maximum zoom percentage allowed over the original image. Defaults to `300`.                                                                                                                            |
+| minZoom           | `Number`   | `false`  | The minimum zoom percentage allowed over the original image. Defaults to `10`.                                                                                                                             |
+| scrollZoom        | `Boolean`  | `false`  | Enable changing the zoom value with the mouse wheel scroll. Defaults to `false`.                                                                                                                           |
+| scrollSensitivity | `Number`   | `false`  | Scroll sensitivity when controlling the zoom value with the mouse wheel scroll. Defaults to `1`.                                                                                                           |
+| zoomOut           | `Boolean`  | `false`  | Enables zooming out of the image with the mouse scroll. Defaults to `false`.                                                                                                                               |
+| state             | `Object`   | `false`  | An object containing the state of the personalization. For each group of the model it can contain the initials and the corresponding engraving (eg. { main: { initials: "AB", engraving: "style:grey" }}). |
+| ripe              | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                                                                               |
+| onUpdateParts     | `Function` | `false`  | Callback called when the parts of the model are changed. This can be due to restrictions and rules of the model when applying a certain customization.                                                     |
+| onLoading         | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                                                          |
+| onLoaded          | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                                                          |
+
+```javascript static
+<RipeImageZoomHover
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    size={1000}
+    frame={"top-0"}
+    zoom={140}
+    maxZoom={300}
+    minZoom={10}
+    scrollZoom={true}
+    scrollSensitivity={2}
+    zoomOut={true}
+    onUpdateParts={parts => {}}
+    onLoading={() => {}}
+    onLoaded={() => {}}
+/>
+```
+
+![Zoom on hover](/res/images/image-zoom-hover.gif)
+
 ## Price
 
 The price component allows for the visualization of the price of a model, according to the currency provided.

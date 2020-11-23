@@ -4,7 +4,7 @@ config.mode = "development";
 config.target = "node";
 
 config.output.devtoolModuleFilenameTemplate = "[absolute-resource-path]";
-config.output.devtoolFallbackModuleFilenameTemplate = "[absolute-resource-path]?[hash]";
+config.output.devtoolFallbackModuleFilenameTemplate = "[absolute-resource-path]?[fullhash]";
 config.output.filename = "ripe-sdk-components-react-test.min.js";
 
 config.module.rules = config.module.rules.filter(

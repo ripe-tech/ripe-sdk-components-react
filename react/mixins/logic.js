@@ -9,10 +9,18 @@ export const LogicMixin = superclass =>
          * be used without further configuration.
          */
         async _setupRipe() {
+            // in case there's no internal RIPE instance already
+            // available then created a new one with default config
             if (!this.state.ripeData) {
-                this.setState({ ripeData: new Ripe() }, async () => await this._configRipe());
+                this.setState({ ripeData: new Ripe() }, async () => {
+                    // runs the initial configuration of the RIPE
+                    // instance properly setting its default
+                    if (this.props.config) await this._configRipe();
+                });
             } else {
-                await this._configRipe();
+                // runs the initial configuration of the RIPE
+                // instance properly setting its default
+                if (this.props.config) await this._configRipe();
             }
 
             // in case the global RIPE instance is not set then

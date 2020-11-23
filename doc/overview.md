@@ -333,6 +333,63 @@ await this.ripe.config("dummy", "cube", {
 
 ![Multiple Images](/res/images/multiple-images.png)
 
+## Image with Zoom
+
+In cases where it is necessary to see details in the image, it is possible to use the `RipeImageZoom`, which applies a given zoom value to the image, centered on a pivot point.
+
+The image with zoom can receive the following parameters:
+
+| Prop            | Type       | Required | Description                                                                                                                                                                                                |
+| --------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| brand           | `String`   | `false`  | The brand of the model.                                                                                                                                                                                    |
+| model           | `String`   | `false`  | The name of the model.                                                                                                                                                                                     |
+| version         | `Number`   | `false`  | The version of the build.                                                                                                                                                                                  |
+| config          | `Boolean`  | `false`  | Indicates that the component should apply the config internally on component initialization.                                                                                                               |
+| parts           | `Object`   | `false`  | The model's customization.                                                                                                                                                                                 |
+| frame           | `String`   | `false`  | The name of the frame to be shown in the configurator. For example, frame `1` on `side` would be `side-1`, and a `top` frame would be `top-1`.                                                             |
+| size            | `Number`   | `false`  | The size (in pixels) of the configurator. If not defined, the configurator will use all the screen space available.                                                                                        |
+| format          | `String`   | `false`  | The format of the image, (eg: png, jpg, svg, etc.). Defaults to 'png'.                                                                                                                                     |
+| crop            | `Boolean`  | `false`  | Indicates that the image composition is to be cropped. Crops the current image according to the minimal possible bounding box in both x and y axis.                                                        |
+| showInitials    | `Boolean`  | `false`  | Indicates if the personalization should be shown. Defaults to `false`.                                                                                                                                     |
+| initialsGroup   | `String`   | `false`  | The group in which the image initials belongs to.                                                                                                                                                          |
+| initialsBuilder | `Function` | `false`  | A function that receives the initials and engraving as strings and the img element that will be used and returns a map with the initials and a profile list.                                               |
+| zoom            | `Number`   | `false`  | Zoom percentage that controls the level of zoom over the original image, defaults to `100`.                                                                                                                |
+| pivot           | `Object`   | `false`  | The x and y coordinates of the pivot point where the zoom will be applied to, e.g. `{ x: 100, y: 100 }`.                                                                                                   |
+| state           | `Object`   | `false`  | An object containing the state of the personalization. For each group of the model it can contain the initials and the corresponding engraving (eg. { main: { initials: "AB", engraving: "style:grey" }}). |
+| ripe            | `Number`   | `false`  | Instance of Ripe SDK initialized, if not defined, the global Ripe SDK instance will be used.                                                                                                               |
+| onUpdateParts   | `Function` | `false`  | Callback called when the parts of the model are changed. This can be due to restrictions and rules of the model when applying a certain customization.                                                     |
+| onLoading       | `Function` | `false`  | Callback called when the configurator is loading.                                                                                                                                                          |
+| onLoaded        | `Function` | `false`  | Callback called when the configurator has loaded.                                                                                                                                                          |
+
+The zoom value is in percentage, and will not go under the `10%` value, which is the minimum to get a visible image. Below is a comparison between the normal image component and one with zoom.
+
+```javascript static
+<RipeImage
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    size={1000}
+    frame={"top-0"}
+    onUpdateParts={parts => {}}
+    onLoading={() => {}}
+    onLoaded={() => {}}
+/>
+<RipeImageZoom
+    brand={"dummy"}
+    model={"cube"}
+    version={52}
+    size={1000}
+    frame={"top-0"}
+    zoom={140}
+    pivot={{ x: 40, y: 30 }}
+    onUpdateParts={parts => {}}
+    onLoading={() => {}}
+    onLoaded={() => {}}
+/>
+```
+
+![Comparison between image with and without zoom](/res/images/image-zoom.png)
+
 ## Price
 
 The price component allows for the visualization of the price of a model, according to the currency provided.

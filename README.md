@@ -2,10 +2,6 @@
 
 React components for [RIPE SDK](https://github.com/ripe-tech/ripe-sdk).
 
-## Documentation
-
-For extended documentation check [Documentation - Overview](doc/overview.md).
-
 ## External
 
 * [Storybook](https://ripe-sdk-components-react.platforme.com/storybook)

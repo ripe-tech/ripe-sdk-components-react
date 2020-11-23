@@ -9,11 +9,13 @@ export class RipeImageZoom extends Component {
     static get propTypes() {
         return {
             /**
-             * Zoom percentage that controls the level of zoom over the original image.
+             * Zoom percentage that controls the level of zoom over
+             * the original image.
              */
             zoom: PropTypes.number,
             /**
-             * The x and y coordinates of the pivot point where the zoom will be applied to.
+             * The X and Y coordinates of the pivot point where the zoom
+             * will be applied to.
              */
             pivot: PropTypes.object
         };
@@ -31,6 +33,7 @@ export class RipeImageZoom extends Component {
             transformOrigin: "0px 0px 0px",
             transform: `scale(${this.props.zoom / 100})`
         };
+
         if (this.props.pivot) {
             // revert the translate after scaling the image so that the scaling
             // appears centered on the pivot
@@ -38,6 +41,7 @@ export class RipeImageZoom extends Component {
                 base.transform
             } translate(${-1 * this.props.pivot.x}px, ${-1 * this.props.pivot.y}px)`;
         }
+
         return base;
     }
 

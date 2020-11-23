@@ -113,13 +113,13 @@ export class RipeImageZoomHover extends Component {
         this.moveHover(event, event.target);
     };
 
+    onMouseLeave = () => {
+        this.endHover();
+    };
+
     onMouseWheel = event => {
         event.stopPropagation();
         this.zoomScroll(event);
-    };
-
-    onEndHover = () => {
-        this.endHover();
     };
 
     _getPivotCoordinates(event, target) {
@@ -138,7 +138,7 @@ export class RipeImageZoomHover extends Component {
                 className="ripe-image-zoom-hover"
                 onMouseEnter={this.onMouseEnter}
                 onMouseMove={this.onMouseMove}
-                onMouseLeave={this.onEndHover}
+                onMouseLeave={this.onMouseLeave}
                 onWheel={this.onMouseWheel}
             >
                 <RipeImageZoom

@@ -17,8 +17,10 @@ storiesOf("Organisms", module)
         const showInitials = boolean("Show Initials", true);
         const zoom = number("Zoom", 140);
         const maxZoom = number("Max Zoom", 500);
+        const minZoom = number("Min Zoom", 10);
         const scrollZoom = boolean("Enable Scroll Zoom", true);
         const scrollSensitivity = number("Scroll Zoom Sensitivity", 1);
+        const zoomOut = boolean("Enable Zoom Out", false);
         const state = {
             initialsExtra: {
                 main: {
@@ -42,8 +44,10 @@ storiesOf("Organisms", module)
                 state={state}
                 zoom={zoom}
                 maxZoom={maxZoom}
+                minZoom={minZoom}
                 scrollZoom={scrollZoom}
                 scrollSensitivity={scrollSensitivity}
+                zoomOut={zoomOut}
             />
         );
     });

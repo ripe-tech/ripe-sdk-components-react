@@ -17,6 +17,10 @@ export class RipeImageZoomHover extends Component {
              */
             maxZoom: PropTypes.number,
             /**
+             * The minimum zoom percentage allowed over the original image.
+             */
+            minZoom: PropTypes.number,
+            /**
              * Enable changing the zoom value with the mouse wheel scroll.
              */
             scrollZoom: PropTypes.bool,
@@ -33,8 +37,9 @@ export class RipeImageZoomHover extends Component {
 
     static get defaultProps() {
         return {
-            zoom: 100,
-            maxZoom: null,
+            zoom: 140,
+            maxZoom: 300,
+            minZoom: 10,
             scrollZoom: false,
             scrollSensitivity: 1,
             zoomOut: false
@@ -84,15 +89,6 @@ export class RipeImageZoomHover extends Component {
 
         const zoomValue = this.state.zoomData + -1 * this.props.scrollSensitivity * event.deltaY;
 
-        // checks if the zoom maximum value was reached, returning
-        // it if that is the case
-        if (this.props.maxZoom && zoomValue > this.props.maxZoom) {
-            this.setState({
-                zoomData: this.props.maxZoom
-            });
-            return;
-        }
-
         // checks if the zooming out feature is disabled, if so only
         // allow zooming out until the base scaling of the image (100%)
         if (!this.props.zoomOut && zoomValue <= 100) {
@@ -105,7 +101,7 @@ export class RipeImageZoomHover extends Component {
         // does not allow reducing to a zoom value smaller than 10 which
         // is the zoom value that allows the image to still be seen
         this.setState({
-            zoomData: zoomValue < 10 ? 10 : zoomValue
+            zoomData: Math.min(Math.max(this.props.minZoom, zoomValue), this.props.maxZoom)
         });
     }
 

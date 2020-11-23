@@ -98,8 +98,8 @@ export class RipeImageZoomHover extends Component {
             return;
         }
 
-        // does not allow reducing to a zoom value smaller than 10 which
-        // is the zoom value that allows the image to still be seen
+        // does not allow values that exceed the minimum and maximum
+        // zoom values provided
         this.setState({
             zoomData: Math.min(Math.max(this.props.minZoom, zoomValue), this.props.maxZoom)
         });

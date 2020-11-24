@@ -47,6 +47,9 @@ export const LogicMixin = superclass =>
                     parts: this.props.parts,
                     currency: this.props.currency ? this.props.currency.toUpperCase() : null
                 });
+                if (this.initials) {
+                    await this.ripeData.setInitials(this.initials, this.engraving || null);
+                }
             } catch (error) {
                 this.setState({ loading: false }, () => {
                     this.props.onLoaded();

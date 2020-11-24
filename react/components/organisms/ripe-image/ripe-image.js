@@ -54,7 +54,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             /**
              * Indicates that the image composition is to be cropped.
              * Crops the current image according to the minimal possible
-             * bounding box in both x and y axis
+             * bounding box in both x and y axis.
              */
             crop: PropTypes.bool,
             /**
@@ -318,7 +318,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             brand: null,
             model: null,
             version: null,
-            config: true,
+            config: null,
             parts: null,
             initials: null,
             engraving: null,
@@ -432,26 +432,78 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             crop: this.props.crop,
             showInitials: this.props.showInitials,
             initialsGroup: this.props.initialsGroup,
-            initialsBuilder: this.props.initialsBuilder
+            initialsBuilder: this.props.initialsBuilder,
+            rotation: this.props.rotation,
+            flip: this.props.flip,
+            mirror: this.props.mirror,
+            boundingBox: this.props.boundingBox,
+            algorithm: this.props.algorithm,
+            background: this.props.background,
+            engine: this.props.engine,
+            initialsX: this.props.initialsX,
+            initialsY: this.props.initialsY,
+            initialsWidth: this.props.initialsWidth,
+            initialsHeight: this.props.initialsHeight,
+            initialsViewport: this.props.initialsViewport,
+            initialsColor: this.props.initialsColor,
+            initialsOpacity: this.props.initialsOpacity,
+            initialsAlign: this.props.initialsAlign,
+            initialsVertical: this.props.initialsVertical,
+            initialsEmbossing: this.props.initialsEmbossing,
+            initialsRotation: this.props.initialsRotation,
+            initialsZindex: this.props.initialsZindex,
+            initialsAlgorithm: this.props.initialsAlgorithm,
+            initialsBlendColor: this.props.initialsBlendColor,
+            initialsPattern: this.props.initialsPattern,
+            initialsTexture: this.props.initialsTexture,
+            initialsExclusion: this.props.initialsExclusion,
+            initialsInclusion: this.props.initialsInclusion,
+            initialsImageRotation: this.props.initialsImageRotation,
+            initialsImageFlip: this.props.initialsImageFlip,
+            initialsImageMirror: this.props.initialsImageMirror,
+            debug: this.props.debug,
+            fontFamily: this.props.fontFamily,
+            fontWeight: this.props.fontWeight,
+            fontSize: this.props.fontSize,
+            fontSpacing: this.props.fontSpacing,
+            fontTrim: this.props.fontTrim,
+            fontMask: this.props.fontMask,
+            fontMode: this.props.fontMode,
+            lineHeight: this.props.lineHeight,
+            lineBreaking: this.props.lineBreaking,
+            shadow: this.props.shadow,
+            shadowColor: this.props.shadowColor,
+            shadowOffset: this.props.shadowOffset,
+            offsets: this.props.offsets,
+            curve: this.props.curve
         });
         this.image.update(this.props.state);
     }
 
     async componentDidUpdate(prevProps) {
+        if (prevProps.profiles !== this.props.profiles) {
+            // TODO
+        }
+        if (prevProps.initials !== this.props.initials) {
+            // TODO
+        }
+        if (prevProps.engraving !== this.props.engraving) {
+            // TODO
+        }
         if (prevProps.size !== this.props.size) {
-            this.image.resize(this.props.size);
+            this.image?.resize(this.props.size);
         }
         if (prevProps.frame !== this.props.frame) {
-            this.image.setFrame(this.props.frame);
+            this.image?.setFrame(this.props.frame);
         }
         if (!this._equalParts(prevProps.parts, this.props.parts)) {
             this._updateParts(this.props.parts);
         }
         if (prevProps.showInitials !== this.props.showInitials) {
-            this.image.setShowInitials(this.props.showInitials);
+            this.image?.setShowInitials(this.props.showInitials);
         }
         if (prevProps.initialsBuilder !== this.props.initialsBuilder) {
-            this.image.setInitialsBuilder(this.props.initialsBuilder);
+            this.image?.setInitialsBuilder(this.props.initialsBuilder);
         }
         if (JSON.stringify(prevProps.state) !== JSON.stringify(this.props.state)) {
             await this.image.update(this.props.state);
@@ -490,12 +542,98 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         if (
             prevProps.format !== props.format ||
             prevProps.crop !== props.crop ||
-            prevProps.initialsGroup !== props.initialsGroup
+            prevProps.initialsGroup !== props.initialsGroup ||
+            prevProps.rotation !== props.rotation ||
+            prevProps.flip !== props.flip ||
+            prevProps.mirror !== props.mirror ||
+            prevProps.boundingBox !== props.boundingBox ||
+            prevProps.algorithm !== props.algorithm ||
+            prevProps.background !== props.background ||
+            prevProps.engine !== props.engine ||
+            prevProps.initialsX !== props.initialsX ||
+            prevProps.initialsY !== props.initialsY ||
+            prevProps.initialsWidth !== props.initialsWidth ||
+            prevProps.initialsHeight !== props.initialsHeight ||
+            prevProps.initialsViewport !== props.initialsViewport ||
+            prevProps.initialsColor !== props.initialsColor ||
+            prevProps.initialsOpacity !== props.initialsOpacity ||
+            prevProps.initialsAlign !== props.initialsAlign ||
+            prevProps.initialsVertical !== props.initialsVertical ||
+            prevProps.initialsEmbossing !== props.initialsEmbossing ||
+            prevProps.initialsRotation !== props.initialsRotation ||
+            prevProps.initialsZindex !== props.initialsZindex ||
+            prevProps.initialsAlgorithm !== props.initialsAlgorithm ||
+            prevProps.initialsBlendColor !== props.initialsBlendColor ||
+            prevProps.initialsPattern !== props.initialsPattern ||
+            prevProps.initialsTexture !== props.initialsTexture ||
+            prevProps.initialsExclusion !== props.initialsExclusion ||
+            prevProps.initialsInclusion !== props.initialsInclusion ||
+            prevProps.initialsImageRotation !== props.initialsImageRotation ||
+            prevProps.initialsImageFlip !== props.initialsImageFlip ||
+            prevProps.initialsImageMirror !== props.initialsImageMirror ||
+            prevProps.debug !== props.debug ||
+            prevProps.fontFamily !== props.fontFamily ||
+            prevProps.fontWeight !== props.fontWeight ||
+            prevProps.fontSize !== props.fontSize ||
+            prevProps.fontSpacing !== props.fontSpacing ||
+            prevProps.fontTrim !== props.fontTrim ||
+            prevProps.fontMask !== props.fontMask ||
+            prevProps.fontMode !== props.fontMode ||
+            prevProps.lineHeight !== props.lineHeight ||
+            prevProps.lineBreaking !== props.lineBreaking ||
+            prevProps.shadow !== props.shadow ||
+            prevProps.shadowColor !== props.shadowColor ||
+            prevProps.shadowOffset !== props.shadowOffset ||
+            prevProps.offsets !== props.offsets ||
+            prevProps.curve !== props.curve
         ) {
-            await this.image.updateOptions({
+            await this.image?.updateOptions({
                 format: this.props.format,
                 crop: this.props.crop,
-                initialsGroup: this.props.initialsGroup
+                initialsGroup: this.props.initialsGroup,
+                rotation: this.props.rotation,
+                flip: this.props.flip,
+                mirror: this.props.mirror,
+                boundingBox: this.props.boundingBox,
+                algorithm: this.props.algorithm,
+                background: this.props.background,
+                engine: this.props.engine,
+                initialsX: this.props.initialsX,
+                initialsY: this.props.initialsY,
+                initialsWidth: this.props.initialsWidth,
+                initialsHeight: this.props.initialsHeight,
+                initialsViewport: this.props.initialsViewport,
+                initialsColor: this.props.initialsColor,
+                initialsOpacity: this.props.initialsOpacity,
+                initialsAlign: this.props.initialsAlign,
+                initialsVertical: this.props.initialsVertical,
+                initialsEmbossing: this.props.initialsEmbossing,
+                initialsRotation: this.props.initialsRotation,
+                initialsZindex: this.props.initialsZindex,
+                initialsAlgorithm: this.props.initialsAlgorithm,
+                initialsBlendColor: this.props.initialsBlendColor,
+                initialsPattern: this.props.initialsPattern,
+                initialsTexture: this.props.initialsTexture,
+                initialsExclusion: this.props.initialsExclusion,
+                initialsInclusion: this.props.initialsInclusion,
+                initialsImageRotation: this.props.initialsImageRotation,
+                initialsImageFlip: this.props.initialsImageFlip,
+                initialsImageMirror: this.props.initialsImageMirror,
+                debug: this.props.debug,
+                fontFamily: this.props.fontFamily,
+                fontWeight: this.props.fontWeight,
+                fontSize: this.props.fontSize,
+                fontSpacing: this.props.fontSpacing,
+                fontTrim: this.props.fontTrim,
+                fontMask: this.props.fontMask,
+                fontMode: this.props.fontMode,
+                lineHeight: this.props.lineHeight,
+                lineBreaking: this.props.lineBreaking,
+                shadow: this.props.shadow,
+                shadowColor: this.props.shadowColor,
+                shadowOffset: this.props.shadowOffset,
+                offsets: this.props.offsets,
+                curve: this.props.curve
             });
         }
     }

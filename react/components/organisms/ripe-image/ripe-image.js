@@ -31,6 +31,14 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             parts: PropTypes.object,
             /**
+             * The initials value to be used in the Ripe instance.
+             */
+            initials: PropTypes.string,
+            /**
+             * The engraving value to be used in the Ripe instance.
+             */
+            engraving: PropTypes.string,
+            /**
              * The name of the frame to be shown in the configurator using
              * the normalized frame format (eg: side-1).
              */
@@ -63,6 +71,211 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              * the initials and a profile list.
              */
             initialsBuilder: PropTypes.func,
+            /**
+             * The angle in degrees of the rotation to apply on the model.
+             */
+            rotation: PropTypes.number,
+            /**
+             * If set flips the current image vertically, this operation is going
+             * to be performed before rotation.
+             */
+            flip: PropTypes.bool,
+            /**
+             * If set mirrors the current image horizontally, this operation is going
+             * to be performed before rotation.
+             */
+            mirror: PropTypes.bool,
+            /**
+             * Tuple that defines the target width and height (only one dimension is required)
+             * for the "inside" image to be generated, note that if both dimensions are defined
+             * image deformation may occur. Example: [100, 100].
+             */
+            boundingBox: PropTypes.array,
+            /**
+             * The name of the blending algorithm that is going to be
+             * used in the blending of the multiple part layers.
+             */
+            algorithm: PropTypes.string,
+            /**
+             * String that defines the color to be applied to the background
+             * in the "RRGGBB" hexadecimal format. Example: "ffffff".
+             */
+            background: PropTypes.string,
+            /**
+             * The name of the engine that is going to be used for the composition
+             * of the image (eg: base, rust, etc.), if not provided the best available is going
+             * to be used for the composition process.
+             */
+            engine: PropTypes.string,
+            /**
+             * A list with the names of the profiles to be used. A profile what what defines a pre-made
+             * configuration in a specific product. The configuration can set the values such as the
+             * font type, color and size, the initials position and rotation. This supports the use of
+             * namespacing.
+             */
+            profiles: PropTypes.array,
+            /**
+             * Overrides the profiles position on the x axis.
+             */
+            initialsX: PropTypes.number,
+            /**
+             * Overrides the profiles position on the y axis.
+             */
+            initialsY: PropTypes.number,
+            /**
+             * Overrides the profiles width.
+             */
+            initialsWidth: PropTypes.number,
+            /**
+             * Overrides the profiles height.
+             */
+            initialsHeight: PropTypes.number,
+            /**
+             * Overrides the profiles viewport. Viewport is a window (specified by [x, y, width, height])
+             * that defines a region to be shown with a zoom. It is used to showcase the initials.
+             */
+            initialsViewport: PropTypes.array,
+            /**
+             * Overrides the profiles color to be applied to the initials.
+             */
+            initialsColor: PropTypes.string,
+            /**
+             * Overrides the profiles opacity to be applied to the initials. This value ranges from
+             * 0 to 1.
+             */
+            initialsOpacity: PropTypes.number,
+            /**
+             * Overrides the profiles orientation of the initials to be applied. This field can be
+             * left, right or center.
+             */
+            initialsAlign: PropTypes.string,
+            /**
+             * Overrides the profiles vertical alignment on the initials. This field can be top,
+             * bottom or middle.
+             */
+            initialsVertical: PropTypes.string,
+            /**
+             * Overrides the profiles embossing type of the initials. The available options
+             * vary with each model.
+             */
+            initialsEmbossing: PropTypes.string,
+            /**
+             * Overrides the profiles rotation angle, in degrees, to be applied to the initials.
+             */
+            initialsRotation: PropTypes.number,
+            /**
+             * Initials' z-index value to be using when composing, ensuring proper layering of the
+             * rendered image.
+             */
+            initialsZindex: PropTypes.number,
+            /**
+             * Algorithm to be used for initials (defaults to 'mask_top').
+             */
+            initialsAlgorithm: PropTypes.string,
+            /**
+             * The background color to be used in the generation of the antialiasing (defaults to '000000').
+             */
+            initialsBlendColor: PropTypes.string,
+            /**
+             * Pattern to be used when tiling.
+             */
+            initialsPattern: PropTypes.string,
+            /**
+             * Texture image to be used when filling the initials.
+             */
+            initialsTexture: PropTypes.string,
+            /**
+             * Parts to exclude when applying the initials.
+             */
+            initialsExclusion: PropTypes.array,
+            /**
+             * Parts to include when applying the initials.
+             */
+            initialsInclusion: PropTypes.array,
+            /**
+             * Overrides the profile's rotation angle, in degrees, to be applied to image.
+             */
+            initialsImageRotation: PropTypes.number,
+            /**
+             * Flip the image around the X axis.
+             */
+            initialsImageFlip: PropTypes.bool,
+            /**
+             * Mirror the image around the Y axis.
+             */
+            initialsImageMirror: PropTypes.bool,
+            /**
+             * Displays the Debug information box.
+             */
+            debug: PropTypes.bool,
+            /**
+             * Overrides the profiles font to be applied on the initials.
+             */
+            fontFamily: PropTypes.string,
+            /**
+             * Overrides the profiles font weight to be applied on the initials.
+             */
+            fontWeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            /**
+             * Overrides the profiles font size to be applied on the initials.
+             */
+            fontSize: PropTypes.number,
+            /**
+             * Overrides the profiles spacing between each letter.
+             */
+            fontSpacing: PropTypes.number,
+            /**
+             * Overrides the profiles font trim, which defines if the initials are trimmed.
+             */
+            fontTrim: PropTypes.bool,
+            /**
+             * Mask strategy when using raster fonts: 'self' means that the alpha channel of the
+             * letter image is going to be used to defined both which pixels are going to be passed
+             * in the paste operation and the intensity; 'simple' means that just the pixels with
+             * a valid alpha value (greater than zero) will be passed to the target image.
+             */
+            fontMask: PropTypes.string,
+            /**
+             * Forces a specific font mode, may improve text render (vector fonts) - it's used by
+             * some graphics drivers to indicate what mode the driver prefers; usually when the
+             * font uses antialiasing the mode 'L' shall improve rendering.
+             */
+            fontMode: PropTypes.string,
+            /**
+             * Overrides the profiles line height, which defines the initials line height.
+             */
+            lineHeight: PropTypes.number,
+            /**
+             * Line break, is optional and can have one of (normal and word_break).
+             */
+            lineBreaking: PropTypes.bool,
+            /**
+             * Overrides the profiles shadow, which defines if the initials have a shadow.
+             */
+            shadow: PropTypes.bool,
+            /**
+             * Overrides the profiles color of the shadow to be used.
+             */
+            shadowColor: PropTypes.string,
+            /**
+             * Overrides the profiles offset to be applied on the shadow.
+             */
+            shadowOffset: PropTypes.string,
+            /**
+             * Overrides the profiles offset to be applied on the initials. Example:
+             * {
+             *   0: [0, 6],
+             *   1: [0, -10],
+             *   2: [0, 10]
+             * }.
+             */
+            offsets: PropTypes.object,
+            /**
+             * Bezier curve control points, must contain four (e.g. [[0.2, 0.2], [0.7, 0.2],
+             * [0.2, 0.5], [0.7, 0.5]]).
+             */
+            curve: PropTypes.array,
+
             /**
              * An object containing the state of the personalization. For each
              * group of the model it can contain the initials and the corresponding
@@ -107,6 +320,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             version: null,
             config: true,
             parts: null,
+            initials: null,
+            engraving: null,
             frame: null,
             size: null,
             format: null,
@@ -114,6 +329,50 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             showInitials: false,
             initialsGroup: null,
             initialsBuilder: null,
+            rotation: null,
+            flip: null,
+            mirror: null,
+            boundingBox: null,
+            algorithm: null,
+            background: null,
+            engine: null,
+            profiles: null,
+            initialsX: null,
+            initialsY: null,
+            initialsWidth: null,
+            initialsHeight: null,
+            initialsViewport: null,
+            initialsColor: null,
+            initialsOpacity: null,
+            initialsAlign: null,
+            initialsVertical: null,
+            initialsEmbossing: null,
+            initialsRotation: null,
+            initialsZindex: null,
+            initialsAlgorithm: null,
+            initialsBlendColor: null,
+            initialsPattern: null,
+            initialsTexture: null,
+            initialsExclusion: null,
+            initialsInclusion: null,
+            initialsImageRotation: null,
+            initialsImageFlip: null,
+            initialsImageMirror: null,
+            debug: null,
+            fontFamily: null,
+            fontWeight: null,
+            fontSize: null,
+            fontSpacing: null,
+            fontTrim: null,
+            fontMask: null,
+            fontMode: null,
+            lineHeight: null,
+            lineBreaking: null,
+            shadow: null,
+            shadowColor: null,
+            shadowOffset: null,
+            offsets: null,
+            curve: null,
             state: {},
             ripe: null,
             name: null,

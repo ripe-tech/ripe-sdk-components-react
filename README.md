@@ -17,7 +17,7 @@ React components for RIPE SDK is currently licensed under the [Apache License, V
 
 ## Build Automation
 
-[![Build Status](https://travis-ci.org/ripe-tech/ripe-sdk-components-react.svg?branch=master)](https://travis-ci.org/ripe-tech/ripe-sdk-components-react)
+[![Build Status](https://travis-ci.com/ripe-tech/ripe-sdk-components-react.svg?branch=master)](https://travis-ci.com/ripe-tech/ripe-sdk-components-react)
 [![Build Status GitHub](https://github.com/ripe-tech/ripe-sdk-components-react/workflows/Main%20Workflow/badge.svg)](https://github.com/ripe-tech/ripe-sdk-components-react/actions)
 [![npm Status](https://img.shields.io/npm/v/ripe-sdk-components-react.svg)](https://www.npmjs.com/package/ripe-sdk-components-react)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/)

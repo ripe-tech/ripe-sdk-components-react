@@ -77,7 +77,6 @@
         "jsdom": "^16.4.0",
         "mochapack": "^2.0.6",
         "node-fetch": "^2.6.1",
-        "node-sass": "^5.0.0",
         "npm-check-updates": "^9.2.4",
         "null-loader": "^4.0.1",
         "prettier": "^2.1.2",

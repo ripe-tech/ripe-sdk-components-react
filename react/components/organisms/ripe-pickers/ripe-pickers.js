@@ -136,10 +136,12 @@ export class RipePickers extends Component {
 
     _filteredOptions() {
         const choices = {};
+
         for (const [part, partValue] of Object.entries(this.state.ripeData.choices)) {
             if (!partValue.available) continue;
 
             const materials = {};
+
             for (const [material, materialValue] of Object.entries(partValue.materials)) {
                 if (!materialValue.available) continue;
                 const colors = [];
@@ -148,9 +150,11 @@ export class RipePickers extends Component {
                     if (!colorValue.available) continue;
                     colors.push(color);
                 }
+
                 if (Object.keys(colors).length === 0) continue;
                 materials[material] = colors;
             }
+
             if (Object.keys(materials).length === 0) continue;
             choices[part] = materials;
         }

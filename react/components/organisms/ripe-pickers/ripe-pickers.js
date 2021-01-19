@@ -144,6 +144,7 @@ export class RipePickers extends Component {
 
             for (const [material, materialValue] of Object.entries(partValue.materials)) {
                 if (!materialValue.available) continue;
+
                 const colors = [];
 
                 for (const [color, colorValue] of Object.entries(materialValue.colors)) {

@@ -6,9 +6,13 @@ import { mount } from "enzyme";
 
 import { Ripe } from "ripe-sdk";
 
+import { TEST_TIMEOUT } from "../../config";
+
 import { RipePickers } from "../../../components";
 
-describe("RipePickers", () => {
+describe("RipePickers", function() {
+    this.timeout(TEST_TIMEOUT);
+
     it("should instantiate the component", () => {
         const onLoading = sinon.fake();
         const ripe = new Ripe("dummy", "cube", {

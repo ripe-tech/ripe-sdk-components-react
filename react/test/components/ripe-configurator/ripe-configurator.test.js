@@ -4,9 +4,13 @@ import assert from "assert";
 import sinon from "sinon";
 import { mount } from "enzyme";
 
+import { TEST_TIMEOUT } from "../../config";
+
 import { RipeConfigurator } from "../../../components";
 
-describe("RipeConfigurator", () => {
+describe("RipeConfigurator", function() {
+    this.timeout(TEST_TIMEOUT);
+
     it("should instantiate the component", () => {
         const onLoading = sinon.fake();
         const component = mount(

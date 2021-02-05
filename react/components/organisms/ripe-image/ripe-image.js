@@ -300,20 +300,56 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             style: PropTypes.object,
             /**
+             * Callback called when the brand of the model is changed.
+             */
+            onUpdateBrand: PropTypes.func,
+            /**
+             * Callback called when the model is changed.
+             */
+            onUpdateModel: PropTypes.func,
+            /**
+             * Callback called when the version is changed.
+             */
+            onUpdateVersion: PropTypes.func,
+            /**
              * Callback called when the parts of the model are changed. This
              * can be due to restrictions and rules of the model when applying
              * a certain customization.
              */
             onUpdateParts: PropTypes.func,
             /**
-             * Callback when the configurator is loading.
+             * Callback called when the initials of the model are changed.
+             */
+            onUpdateInitials: PropTypes.func,
+            /**
+             * Callback called when the engraving of the model is changed.
+             */
+            onUpdateEngraving: PropTypes.func,
+            /**
+             * Callback called when the initials extra of the model are changed.
+             */
+            onUpdateInitialsExtra: PropTypes.func,
+            /**
+             * Callback called when the currency of the model is changed.
+             */
+            onUpdateCurrency: PropTypes.func,
+            /**
+             * Callback when the image is loading.
              */
             onLoading: PropTypes.func,
+            /**
+             * Callback when the RIPE instance is configuring.
+             */
+            onConfiguring: PropTypes.func,
             /**
              * Callback when the configurator has finished loading,
              * when it is possible to visualize it or when an error occurred.
              */
-            onLoaded: PropTypes.func
+            onLoaded: PropTypes.func,
+            /**
+             * Callback when the RIPE instance ends its configuration.
+             */
+            onConfigured: PropTypes.func
         };
     }
 
@@ -382,9 +418,18 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             curve: null,
             name: null,
             style: {},
+            onUpdateBrand: brand => {},
+            onUpdateModel: model => {},
+            onUpdateVersion: version => {},
             onUpdateParts: parts => {},
+            onUpdateInitials: initials => {},
+            onUpdateEngraving: engraving => {},
+            onUpdateInitialsExtra: initialsExtra => {},
+            onUpdateCurrency: currency => {},
             onLoading: () => {},
-            onLoaded: () => {}
+            onConfiguring: () => {},
+            onLoaded: () => {},
+            onConfigured: () => {}
         };
     }
 

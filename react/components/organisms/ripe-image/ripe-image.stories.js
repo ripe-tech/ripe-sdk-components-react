@@ -11,7 +11,7 @@ storiesOf("Organisms", module)
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);
-        const parts = number("Parts", {
+        const parts = {
             side: {
                 color: "blue",
                 material: "leather_cbe",
@@ -27,7 +27,7 @@ storiesOf("Organisms", module)
                 face: "side",
                 material: "leather_cbe"
             }
-        });
+        };
         const initials = text("Initials", "");
         const engraving = text("Engraving", "style:black");
         const frame = text("Frame", "side-0");

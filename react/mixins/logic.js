@@ -18,7 +18,9 @@ export const LogicMixin = superclass =>
             // in case there's no internal RIPE instance already
             // available then created a new one with default config
             if (!this.state.ripeData) {
-                this.setState({ ripeData: new Ripe() });
+                const promisedSetState = state =>
+                    new Promise(resolve => this.setState(state, resolve));
+                await promisedSetState({ ripeData: new Ripe() });
             }
 
             this.onPreConfig = this.state.ripeData.bind(
@@ -48,8 +50,12 @@ export const LogicMixin = superclass =>
             });
 
             this.onInitials = this.state.ripeData.bind("initials", async (initials, engraving) => {
-                if (initials === this.state.initialsData && engraving === this.state.engravingData)
-                    { return; }
+                if (
+                    initials === this.state.initialsData &&
+                    engraving === this.state.engravingData
+                ) {
+                    return;
+                }
                 if (this.state.structureData) {
                     const structure = await this.ripeData.getStructure();
                     this.setState({ structureData: structure });
@@ -64,8 +70,9 @@ export const LogicMixin = superclass =>
             this.onInitialsExtra = this.state.ripeData.bind(
                 "initials_extra",
                 async initialsExtra => {
-                    if (this.equalInitialsExtra(initialsExtra, this.state.initialsExtraData))
-                        { return; }
+                    if (this.equalInitialsExtra(initialsExtra, this.state.initialsExtraData)) {
+                        return;
+                    }
                     if (this.state.structureData) {
                         const structure = await this.ripeData.getStructure();
                         this.setState({ structureData: structure });
@@ -243,6 +250,8 @@ export const LogicMixin = superclass =>
         }
 
         equalStructure(first, second) {
+            if (!first && !second) return true;
+            if (!first || !second) return false;
             return (
                 first.brand === second.brand &&
                 first.model === second.model &&
@@ -323,35 +332,41 @@ export const LogicMixin = superclass =>
         async _copyRipeData() {
             if (this.props.structure) {
                 const structure = await this.ripeData.getStructure();
-                this.setState({
-                    structureData: structure,
-                    currencyData: this.state.ripeData.currency
-                }, () => {
-                    this.props.onUpdateStructure(structure);
-                    this.props.onUpdateCurrency(this.state.ripeData.currency);
-                });
+                this.setState(
+                    {
+                        structureData: structure,
+                        currencyData: this.state.ripeData.currency
+                    },
+                    () => {
+                        this.props.onUpdateStructure(structure);
+                        this.props.onUpdateCurrency(this.state.ripeData.currency);
+                    }
+                );
             } else {
-                this.setState({
-                    brandData: this.state.ripeData.brand,
-                    modelData: this.state.ripeData.model,
-                    versionData: this.state.ripeData.version,
-                    partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts)),
-                    initialsData: this.state.ripeData.initials,
-                    engravingData: this.state.ripeData.engraving,
-                    initialsExtraData: JSON.parse(
-                        JSON.stringify(this.state.ripeData.initialsExtra)
-                    ),
-                    currencyData: this.state.ripeData.currency
-                }, () => {
-                    this.props.onUpdateBrand(this.state.brandData);
-                    this.props.onUpdateModel(this.state.modelData);
-                    this.props.onUpdateVersion(this.state.versionData);
-                    this.props.onUpdateParts(this.state.partsData);
-                    this.props.onUpdateInitials(this.state.initialsData);
-                    this.props.onUpdateEngraving(this.state.engravingData);
-                    this.props.onUpdateInitialsExtra(this.state.initialsExtraData);
-                    this.props.onUpdateCurrency(this.state.currencyData);
-                });
+                this.setState(
+                    {
+                        brandData: this.state.ripeData.brand,
+                        modelData: this.state.ripeData.model,
+                        versionData: this.state.ripeData.version,
+                        partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts)),
+                        initialsData: this.state.ripeData.initials,
+                        engravingData: this.state.ripeData.engraving,
+                        initialsExtraData: JSON.parse(
+                            JSON.stringify(this.state.ripeData.initialsExtra)
+                        ),
+                        currencyData: this.state.ripeData.currency
+                    },
+                    () => {
+                        this.props.onUpdateBrand(this.state.brandData);
+                        this.props.onUpdateModel(this.state.modelData);
+                        this.props.onUpdateVersion(this.state.versionData);
+                        this.props.onUpdateParts(this.state.partsData);
+                        this.props.onUpdateInitials(this.state.initialsData);
+                        this.props.onUpdateEngraving(this.state.engravingData);
+                        this.props.onUpdateInitialsExtra(this.state.initialsExtraData);
+                        this.props.onUpdateCurrency(this.state.currencyData);
+                    }
+                );
             }
         }
 

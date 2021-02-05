@@ -21,13 +21,19 @@ export const LogicMixin = superclass =>
                 this.setState({ ripeData: new Ripe() });
             }
 
-            this.onPreConfig = this.state.ripeData.bind("pre_config", async (brand, model, options) => {
-                await this._copyRipeData();
-            });
+            this.onPreConfig = this.state.ripeData.bind(
+                "pre_config",
+                async (brand, model, options) => {
+                    await this._copyRipeData();
+                }
+            );
 
-            this.onPostConfig = this.state.ripeData.bind("post_config", async (loadedConfig, options) => {
-                await this._copyRipeData();
-            });
+            this.onPostConfig = this.state.ripeData.bind(
+                "post_config",
+                async (loadedConfig, options) => {
+                    await this._copyRipeData();
+                }
+            );
 
             this.onParts = this.state.ripeData.bind("parts", async parts => {
                 if (this.equalParts(parts, this.partsData)) return;
@@ -35,33 +41,43 @@ export const LogicMixin = superclass =>
                     const structure = await this.ripeData.getStructure();
                     this.setState({ structureData: structure });
                 } else {
-                    this.setState({ partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts)) });
+                    this.setState({
+                        partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts))
+                    });
                 }
             });
 
             this.onInitials = this.state.ripeData.bind("initials", async (initials, engraving) => {
-                if (initials === this.state.initialsData && engraving === this.state.engravingData) return;
-                if (this.state.structureData) {
-                    const structure = await this.ripeData.getStructure();
-                    this.setState({ structureData: structure });
-                } else {
-                    this.setState({ initialsData: this.state.ripeData.initials, engravingData: this.state.ripeData.engraving });
-                }
-            });
-
-            this.onInitialsExtra = this.state.ripeData.bind("initials_extra", async initialsExtra => {
-                if (this.equalInitialsExtra(initialsExtra, this.state.initialsExtraData)) return;
+                if (initials === this.state.initialsData && engraving === this.state.engravingData)
+                    { return; }
                 if (this.state.structureData) {
                     const structure = await this.ripeData.getStructure();
                     this.setState({ structureData: structure });
                 } else {
                     this.setState({
-                        initialsExtraData: JSON.parse(
-                            JSON.stringify(this.state.ripeData.initialsExtra)
-                        )
+                        initialsData: this.state.ripeData.initials,
+                        engravingData: this.state.ripeData.engraving
                     });
                 }
             });
+
+            this.onInitialsExtra = this.state.ripeData.bind(
+                "initials_extra",
+                async initialsExtra => {
+                    if (this.equalInitialsExtra(initialsExtra, this.state.initialsExtraData))
+                        { return; }
+                    if (this.state.structureData) {
+                        const structure = await this.ripeData.getStructure();
+                        this.setState({ structureData: structure });
+                    } else {
+                        this.setState({
+                            initialsExtraData: JSON.parse(
+                                JSON.stringify(this.state.ripeData.initialsExtra)
+                            )
+                        });
+                    }
+                }
+            );
 
             // in case the global RIPE instance is not set then
             // updates it with the current one
@@ -116,7 +132,8 @@ export const LogicMixin = superclass =>
             currency = currency === undefined ? this.state.currencyData : currency;
             initials = initials === undefined ? this.state.initialsData : initials;
             engraving = engraving === undefined ? this.state.engravingData : engraving;
-            initialsExtra = initialsExtra === undefined ? this.state.initialsExtraData : initialsExtra;
+            initialsExtra =
+                initialsExtra === undefined ? this.state.initialsExtraData : initialsExtra;
             structure = structure === undefined ? this.state.structureData : structure;
 
             try {
@@ -238,11 +255,19 @@ export const LogicMixin = superclass =>
         }
 
         equalConfigOptions(first, second) {
-            return (first.brand === second.brand) && (first.model === second.model) && (first.version === second.version) && (first.currency === second.currency);
+            return (
+                first.brand === second.brand &&
+                first.model === second.model &&
+                first.version === second.version &&
+                first.currency === second.currency
+            );
         }
 
         equalConfigOptionsStructure(first, second) {
-            return this.equalStructure(first.structure, second.structure) && (first.currency === second.currency);
+            return (
+                this.equalStructure(first.structure, second.structure) &&
+                first.currency === second.currency
+            );
         }
 
         _subsetCompareParts(base, reference) {
@@ -298,7 +323,13 @@ export const LogicMixin = superclass =>
         async _copyRipeData() {
             if (this.props.structure) {
                 const structure = await this.ripeData.getStructure();
-                this.setState({ structureData: structure, currencyData: this.state.ripeData.currency });
+                this.setState({
+                    structureData: structure,
+                    currencyData: this.state.ripeData.currency
+                }, () => {
+                    this.props.onUpdateStructure(structure);
+                    this.props.onUpdateCurrency(this.state.ripeData.currency);
+                });
             } else {
                 this.setState({
                     brandData: this.state.ripeData.brand,
@@ -307,8 +338,19 @@ export const LogicMixin = superclass =>
                     partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts)),
                     initialsData: this.state.ripeData.initials,
                     engravingData: this.state.ripeData.engraving,
-                    initialsExtraData: JSON.parse(JSON.stringify(this.state.ripeData.initialsExtra)),
+                    initialsExtraData: JSON.parse(
+                        JSON.stringify(this.state.ripeData.initialsExtra)
+                    ),
                     currencyData: this.state.ripeData.currency
+                }, () => {
+                    this.props.onUpdateBrand(this.state.brandData);
+                    this.props.onUpdateModel(this.state.modelData);
+                    this.props.onUpdateVersion(this.state.versionData);
+                    this.props.onUpdateParts(this.state.partsData);
+                    this.props.onUpdateInitials(this.state.initialsData);
+                    this.props.onUpdateEngraving(this.state.engravingData);
+                    this.props.onUpdateInitialsExtra(this.state.initialsExtraData);
+                    this.props.onUpdateCurrency(this.state.currencyData);
                 });
             }
         }
@@ -339,8 +381,6 @@ export const LogicMixin = superclass =>
             if (!this.equalConfigOptions(prevProps, this.props)) {
                 this._updateConfigOptions(prevProps);
             }
-
-            // @TODO: onUpdate for brand, model and others inside the config options
         }
 
         _updateParts(parts) {
@@ -402,8 +442,8 @@ export const LogicMixin = superclass =>
                 parts: this.props.parts,
                 initials: this.props.initials,
                 engraving: this.props.engraving,
-                initialsExtra: this.props.initialsExtra,
-            }
+                initialsExtra: this.props.initialsExtra
+            };
 
             // resets the parts and personalization options if
             // the model was changed but they stayed the same,
@@ -481,5 +521,4 @@ export const LogicMixin = superclass =>
                 currency: !equalCurrency ? this.props.currency : undefined
             });
         }
-
     };

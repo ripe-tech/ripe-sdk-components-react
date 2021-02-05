@@ -382,9 +382,9 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             curve: null,
             name: null,
             style: {},
-            onUpdateParts: parts => { },
-            onLoading: () => { },
-            onLoaded: () => { }
+            onUpdateParts: parts => {},
+            onLoading: () => {},
+            onLoaded: () => {}
         };
     }
 
@@ -524,7 +524,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
     }
 
     async componentDidUpdate(prevProps) {
-        // @TODO: call componentDidUpdate for logic data
+        await this._componentDidUpdate(prevProps);
 
         if (!this.image) return;
 
@@ -549,16 +549,6 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         if (this.image) await this.state.ripeData.unbindImage(this.image);
         this.image = null;
     }
-
-    // async _updateConfiguration(props, prevProps) {
-    //     if (
-    //         prevProps.brand !== props.brand ||
-    //         prevProps.model !== props.model ||
-    //         prevProps.version !== props.version
-    //     ) {
-    //         if (props.config) await this._configRipe();
-    //     }
-    // }
 
     async _updateConfigurator(props, prevProps) {
         if (

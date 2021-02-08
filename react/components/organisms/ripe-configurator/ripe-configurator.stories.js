@@ -1,6 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
+import { Ripe } from "ripe-sdk";
 
 import { RipeConfigurator } from "./ripe-configurator";
 
@@ -20,6 +21,7 @@ storiesOf("Organisms", module)
         const duration = number("Duration", 1000);
         const animation = text("Animation", "cross");
         const format = text("Format", "png");
+        const ripe = new Ripe();
 
         return (
             <RipeConfigurator
@@ -36,6 +38,8 @@ storiesOf("Organisms", module)
                 duration={duration}
                 animation={animation}
                 format={format}
+                ripe={ripe}
+                config={true}
             />
         );
     });

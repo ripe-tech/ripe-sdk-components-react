@@ -250,6 +250,9 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     /**
      * Updates the configurator, showing the provided frame
      * with possible animation.
+     * 
+     * @param {String} value The current frame.
+     * @param {String} previous The previous frame.
      */
     async _changeFrame(value, previous) {
         // in case the configurator is not currently ready
@@ -272,31 +275,18 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
         // only the visible instance of this component
         // should be sending events it's considered to
         // be the main/master one
-        if (this._elementDisplayed()) {
+        if (this._isElementDisplayed()) {
             this.props.onUpdateFrame(value);
         }
     }
 
     /**
-     * Re-sizes the configurator according to the current
-     * available container size (defined by parent).
+     * Verifies if values changed an, if so, updates
+     * the configurator with the given options.
+     * 
+     * @param {Object} props Current props.
+     * @param {Object} prevProps Previous props.
      */
-    _resize(size) {
-        if (!size || !this.configurator) return;
-        this.configurator.resize(size);
-    }
-
-    _highlightPart(part, previousPart) {
-        this.configurator.lowlight(previousPart);
-        this.configurator.highlight(part);
-    }
-
-    _updateUseMasks(useMasks) {
-        if (!this.configurator) return;
-        if (useMasks) this.configurator.enableMasks();
-        else this.configurator.disableMasks();
-    }
-
     async _updateConfigurator(props, prevProps) {
         if (
             prevProps.sensitivity !== props.sensitivity ||
@@ -313,10 +303,43 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
         }
     }
 
-    _elementDisplayed() {
-        if (!this.configurator) {
-            return false;
-        }
+    /**
+     * Re-sizes the configurator according to the current
+     * available container size (defined by parent).
+     * 
+     * @param {*} size The configurator size (in pixels).
+     */
+    _resize(size) {
+        if (!size || !this.configurator) return;
+        this.configurator.resize(size);
+    }
+
+    /**
+     * Removes the highlight of the previous part and
+     * highlights the chosen part.
+     * 
+     * @param {String} part The part to be highlighted.
+     * @param {String} previousPart The part to be removed the highlight.
+     */
+    _highlightPart(part, previousPart) {
+        this.configurator.lowlight(previousPart);
+        this.configurator.highlight(part);
+    }
+
+    /**
+     * Updates the masks activation with the given value.
+     * 
+     * @param {Boolean} useMasks Value that represents the
+     * activation or disabling of masks.
+     */
+    _updateUseMasks(useMasks) {
+        if (!this.configurator) return;
+        if (useMasks) this.configurator.enableMasks();
+        else this.configurator.disableMasks();
+    }
+
+    _isElementDisplayed() {
+        if (!this.configurator) return false;
         return getComputedStyle(this.configurator.element).display !== "none";
     }
 

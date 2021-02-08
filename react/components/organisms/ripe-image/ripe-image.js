@@ -428,7 +428,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             offsets: this.props.offsets,
             curve: this.props.curve
         });
-
+        
+        // only updates if the SDK configuration is not empty
         if (this.state.ripeData.brand) {
             await this.image.update({
                 initials: this.state.initialsData,
@@ -465,6 +466,13 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         this.image = null;
     }
 
+    /**
+     * Verifies if values changed an, if so, updates
+     * the image with the given options.
+     * 
+     * @param {Object} props Current props.
+     * @param {Object} prevProps Previous props.
+     */
     async _updateImage(props, prevProps) {
         if (
             prevProps.format !== props.format ||

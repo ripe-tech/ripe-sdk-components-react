@@ -103,18 +103,70 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
 
         this.state = {
             /**
+             * RIPE instance, which can be later initialized
+             * if the given prop is not defined.
+             */
+            ripeData: props.ripe,
+            /**
+             * Brand to be used for the internal sync operation.
+             */
+            brandData: props.brand,
+            /**
+             * Model to be used for the internal sync operation.
+             */
+            modelData: props.model,
+            /**
+             * 3DB version to be used for the internal sync operation.
+             */
+            versionData: props.version,
+            /**
+             * Currency to be used for the internal sync operation.
+             */
+            currencyData: props.currency,
+            /**
+             * Reflects whether this component should apply
+             * configuration changes to the associated RIPE SDK.
+             */
+            configData: props.config,
+            /**
+             * Parts of the model to be used for the internal sync
+             * operation.
+             */
+            partsData: props.parts,
+            /**
+             * Initials to be used for the internal sync operation.
+             */
+            initialsData: props.initials,
+            /**
+             * Engraving to be used for the internal sync operation.
+             */
+            engravingData: props.engraving,
+            /**
+             * Initials extra to be used for the internal sync operation.
+             */
+            initialsExtraData: props.initialsExtra,
+            /**
+             * Structure to be used for the internal sync operation.
+             */
+            structureData: props.structure,
+            /**
+             * Flag that controls if the initial loading process for
+             * the configurator is still running.
+             */
+            loading: true,
+            /**
              * The frame that is currently being shown in the
              * configurator.
              */
-            frameData: this.props.frame,
+            frameData: props.frame,
             /**
              * Part of the model that is currently selected.
              */
-            selectedPartData: this.props.selectedPart,
+            selectedPartData: props.selectedPart,
             /**
              * Part of the model that is currently highlighted.
              */
-            highlightedPartData: this.props.highlightedPart
+            highlightedPartData: props.highlightedPart
         };
     }
 

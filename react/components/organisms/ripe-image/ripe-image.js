@@ -312,6 +312,65 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         };
     }
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            /**
+             * RIPE instance, which can be later initialized
+             * if the given prop is not defined.
+             */
+            ripeData: props.ripe,
+            /**
+             * Brand to be used for the internal sync operation.
+             */
+            brandData: props.brand,
+            /**
+             * Model to be used for the internal sync operation.
+             */
+            modelData: props.model,
+            /**
+             * 3DB version to be used for the internal sync operation.
+             */
+            versionData: props.version,
+            /**
+             * Currency to be used for the internal sync operation.
+             */
+            currencyData: props.currency,
+            /**
+             * Reflects whether this component should apply
+             * configuration changes to the associated RIPE SDK.
+             */
+            configData: props.config,
+            /**
+             * Parts of the model to be used for the internal sync
+             * operation.
+             */
+            partsData: props.parts,
+            /**
+             * Initials to be used for the internal sync operation.
+             */
+            initialsData: props.initials,
+            /**
+             * Engraving to be used for the internal sync operation.
+             */
+            engravingData: props.engraving,
+            /**
+             * Initials extra to be used for the internal sync operation.
+             */
+            initialsExtraData: props.initialsExtra,
+            /**
+             * Structure to be used for the internal sync operation.
+             */
+            structureData: props.structure,
+            /**
+             * Flag that controls if the initial loading process for
+             * the configurator is still running.
+             */
+            loading: true,
+        }
+    }
+
     async componentDidMount() {
         this.props.onLoading();
 

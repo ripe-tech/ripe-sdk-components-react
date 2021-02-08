@@ -367,8 +367,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              * Flag that controls if the initial loading process for
              * the configurator is still running.
              */
-            loading: true,
-        }
+            loading: true
+        };
     }
 
     async componentDidMount() {
@@ -428,7 +428,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             offsets: this.props.offsets,
             curve: this.props.curve
         });
-        
+
         // only updates if the SDK configuration is not empty
         if (this.state.ripeData.brand) {
             await this.image.update({
@@ -469,7 +469,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
     /**
      * Verifies if values changed an, if so, updates
      * the image with the given options.
-     * 
+     *
      * @param {Object} props Current props.
      * @param {Object} prevProps Previous props.
      */

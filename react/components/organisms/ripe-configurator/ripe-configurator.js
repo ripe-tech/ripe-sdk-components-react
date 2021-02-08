@@ -250,7 +250,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     /**
      * Updates the configurator, showing the provided frame
      * with possible animation.
-     * 
+     *
      * @param {String} value The current frame.
      * @param {String} previous The previous frame.
      */
@@ -283,7 +283,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     /**
      * Verifies if values changed an, if so, updates
      * the configurator with the given options.
-     * 
+     *
      * @param {Object} props Current props.
      * @param {Object} prevProps Previous props.
      */
@@ -306,7 +306,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     /**
      * Re-sizes the configurator according to the current
      * available container size (defined by parent).
-     * 
+     *
      * @param {*} size The configurator size (in pixels).
      */
     _resize(size) {
@@ -317,7 +317,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     /**
      * Removes the highlight of the previous part and
      * highlights the chosen part.
-     * 
+     *
      * @param {String} part The part to be highlighted.
      * @param {String} previousPart The part to be removed the highlight.
      */
@@ -328,7 +328,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
 
     /**
      * Updates the masks activation with the given value.
-     * 
+     *
      * @param {Boolean} useMasks Value that represents the
      * activation or disabling of masks.
      */

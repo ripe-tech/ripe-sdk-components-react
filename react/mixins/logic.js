@@ -3,7 +3,6 @@ import { Ripe } from "ripe-sdk";
 
 export const LogicMixin = superclass =>
     class extends superclass {
-
         static get _propTypes() {
             return {
                 /**
@@ -140,7 +139,7 @@ export const LogicMixin = superclass =>
                 onLoaded: () => {},
                 onConfigured: () => {}
             };
-        };
+        }
 
         /**
          * Initializes RIPE instance if it does not exists and
@@ -181,11 +180,16 @@ export const LogicMixin = superclass =>
                 if (this.equalParts(parts, this.partsData)) return;
                 if (this.structureData) {
                     const structure = await this.ripeData.getStructure();
-                    this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
+                    this.setState({ structureData: structure }, () =>
+                        this.props.onUpdateStructure(structure)
+                    );
                 } else {
-                    this.setState({
-                        partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts))
-                    }, () => this.props.onUpdateParts(parts));
+                    this.setState(
+                        {
+                            partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts))
+                        },
+                        () => this.props.onUpdateParts(parts)
+                    );
                 }
             });
 
@@ -198,15 +202,20 @@ export const LogicMixin = superclass =>
                 }
                 if (this.state.structureData) {
                     const structure = await this.ripeData.getStructure();
-                    this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
+                    this.setState({ structureData: structure }, () =>
+                        this.props.onUpdateStructure(structure)
+                    );
                 } else {
-                    this.setState({
-                        initialsData: this.state.ripeData.initials,
-                        engravingData: this.state.ripeData.engraving
-                    }, () => { 
-                        this.props.onUpdateInitials(this.state.ripeData.initials);
-                        this.props.onUpdateEngraving(this.state.ripeData.engraving);
-                    });
+                    this.setState(
+                        {
+                            initialsData: this.state.ripeData.initials,
+                            engravingData: this.state.ripeData.engraving
+                        },
+                        () => {
+                            this.props.onUpdateInitials(this.state.ripeData.initials);
+                            this.props.onUpdateEngraving(this.state.ripeData.engraving);
+                        }
+                    );
                 }
             });
 
@@ -218,13 +227,19 @@ export const LogicMixin = superclass =>
                     }
                     if (this.state.structureData) {
                         const structure = await this.ripeData.getStructure();
-                        this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
+                        this.setState({ structureData: structure }, () =>
+                            this.props.onUpdateStructure(structure)
+                        );
                     } else {
-                        this.setState({
-                            initialsExtraData: JSON.parse(
-                                JSON.stringify(this.state.ripeData.initialsExtra)
-                            )
-                        }, () => this.props.onUpdateInitialsExtra(this.state.ripeData.initialsExtra));
+                        this.setState(
+                            {
+                                initialsExtraData: JSON.parse(
+                                    JSON.stringify(this.state.ripeData.initialsExtra)
+                                )
+                            },
+                            () =>
+                                this.props.onUpdateInitialsExtra(this.state.ripeData.initialsExtra)
+                        );
                     }
                 }
             );

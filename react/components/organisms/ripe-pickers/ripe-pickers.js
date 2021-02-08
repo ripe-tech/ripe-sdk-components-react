@@ -20,7 +20,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     static get defaultProps() {
         return {
             ...this._defaultProps,
-            onUpdateHighlightedPart: part => { }
+            onUpdateHighlightedPart: part => {}
         };
     }
 
@@ -131,7 +131,10 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
             });
         });
 
-        this.setState({ choices: this.state.ripeData.choices }, () => { this.props.onLoaded(); console.log(this.state.ripeData.choices) });
+        this.setState({ choices: this.state.ripeData.choices }, () => {
+            this.props.onLoaded();
+            console.log(this.state.ripeData.choices);
+        });
     }
 
     async componentWillUnmount() {
@@ -186,10 +189,12 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     _colorOptions() {
         if (!this.state.selectedMaterial) return [];
 
-        return this._filteredOptions()[this.state.selectedPart][this.state.selectedMaterial].map(color => ({
-            label: this._normalize(color),
-            value: color
-        }));
+        return this._filteredOptions()[this.state.selectedPart][this.state.selectedMaterial].map(
+            color => ({
+                label: this._normalize(color),
+                value: color
+            })
+        );
     }
 
     _normalize(value) {
@@ -210,8 +215,9 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
 
         const materialOptions = this._materialOptions();
         const selectedMaterial = materialOptions.length === 1 ? materialOptions[0].value : null;
-        this.setState({ selectedPart: value, selectedMaterial: selectedMaterial, selectedColor: null }, () =>
-            this.props.onUpdateHighlightedPart(value)
+        this.setState(
+            { selectedPart: value, selectedMaterial: selectedMaterial, selectedColor: null },
+            () => this.props.onUpdateHighlightedPart(value)
         );
     }
 
@@ -246,7 +252,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     render() {
         return (
             <div className="ripe-pickers">
-                {this._partsOptions().length > 0 &&
+                {this._partsOptions().length > 0 && (
                     <select
                         value={this.state.selectedPart ? this.state.selectedPart : ""}
                         onChange={event => this._onSelectPartChange(event.target.value)}
@@ -259,7 +265,8 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
                                 {part.label}
                             </option>
                         ))}
-                    </select>}
+                    </select>
+                )}
                 <select
                     value={this.state.selectedMaterial ? this.state.selectedMaterial : ""}
                     onChange={event => this._onSelectMaterialChange(event.target.value)}

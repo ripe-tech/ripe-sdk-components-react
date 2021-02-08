@@ -1,7 +1,211 @@
+import PropTypes from "prop-types";
 import { Ripe } from "ripe-sdk";
 
 export const LogicMixin = superclass =>
     class extends superclass {
+
+        static get _propTypes() {
+            return {
+                /**
+                 * An initialized RIPE instance form the RIPE SDK, if not defined,
+                 * a new SDK instance will be initialized.
+                 */
+                ripe: PropTypes.object,
+                /**
+                 * The brand of the model.
+                 */
+                brand: PropTypes.string,
+                /**
+                 * The name of the model.
+                 */
+                model: PropTypes.string,
+                /**
+                 * The version of the build.
+                 */
+                version: PropTypes.number,
+                /**
+                 * The currency being used for the price of the model.
+                 */
+                currency: PropTypes.string,
+                /**
+                 * Indicates that the component should apply the config internally
+                 * on component initialization.
+                 */
+                config: PropTypes.bool,
+                /**
+                 * The parts of the customized build as a dictionary mapping the
+                 * name of the part to an object of material and color.
+                 */
+                parts: PropTypes.object,
+                /**
+                 * The initials value to be used in the RIPE instance.
+                 */
+                initials: PropTypes.string,
+                /**
+                 * The engraving value to be used in the RIPE instance.
+                 */
+                engraving: PropTypes.string,
+                /**
+                 * The set of (initials, engraving) per initials group
+                 * to be used in the RIPE instance.
+                 */
+                initialsExtra: PropTypes.object,
+                /**
+                 * The normalized structure that uniquely represents
+                 * the configuration "situation".
+                 */
+                structure: PropTypes.object,
+                /**
+                 * Callback called when the brand of the model is changed.
+                 */
+                onUpdateBrand: PropTypes.func,
+                /**
+                 * Callback called when the model is changed.
+                 */
+                onUpdateModel: PropTypes.func,
+                /**
+                 * Callback called when the version is changed.
+                 */
+                onUpdateVersion: PropTypes.func,
+                /**
+                 * Callback called when the parts of the model are changed. This
+                 * can be due to restrictions and rules of the model when applying
+                 * a certain customization.
+                 */
+                onUpdateParts: PropTypes.func,
+                /**
+                 * Callback called when the initials of the model are changed.
+                 */
+                onUpdateInitials: PropTypes.func,
+                /**
+                 * Callback called when the engraving of the model is changed.
+                 */
+                onUpdateEngraving: PropTypes.func,
+                /**
+                 * Callback called when the initials extra of the model are changed.
+                 */
+                onUpdateInitialsExtra: PropTypes.func,
+                /**
+                 * Callback called when the currency of the model is changed.
+                 */
+                onUpdateCurrency: PropTypes.func,
+                /**
+                 * Callback called when the structure is changed.
+                 */
+                onUpdateStructure: PropTypes.func,
+                /**
+                 * Callback when the image is loading.
+                 */
+                onLoading: PropTypes.func,
+                /**
+                 * Callback when the RIPE instance is configuring.
+                 */
+                onConfiguring: PropTypes.func,
+                /**
+                 * Callback when the configurator or image has finished loading,
+                 * when it is possible to visualize it or when an error occurred.
+                 */
+                onLoaded: PropTypes.func,
+                /**
+                 * Callback when the RIPE instance ends its configuration.
+                 */
+                onConfigured: PropTypes.func
+            };
+        }
+
+        static get _defaultProps() {
+            return {
+                ripe: null,
+                brand: null,
+                model: null,
+                version: null,
+                currency: null,
+                config: true,
+                parts: null,
+                initials: null,
+                engraving: null,
+                initialsExtra: null,
+                structure: null,
+                onUpdateBrand: brand => {},
+                onUpdateModel: model => {},
+                onUpdateVersion: version => {},
+                onUpdateParts: parts => {},
+                onUpdateInitials: initials => {},
+                onUpdateEngraving: engraving => {},
+                onUpdateInitialsExtra: initialsExtra => {},
+                onUpdateCurrency: currency => {},
+                onUpdateStructure: structure => {},
+                onLoading: () => {},
+                onConfiguring: () => {},
+                onLoaded: () => {},
+                onConfigured: () => {}
+            };
+        };
+
+        constructor(props) {
+            super(props);
+    
+            this.state = {
+                /**
+                 * RIPE instance, which can be later initialized
+                 * if the given prop is not defined.
+                 */
+                ripeData: this.ripe,
+                /**
+                 * Brand to be used for the internal sync operation.
+                 */
+                brandData: this.brand,
+                /**
+                 * Model to be used for the internal sync operation.
+                 */
+                modelData: this.model,
+                /**
+                 * 3DB version to be used for the internal sync operation.
+                 */
+                versionData: this.version,
+                /**
+                 * Currency to be used for the internal sync operation.
+                 */
+                currencyData: this.currency,
+                /**
+                 * Reflects whether this component should apply
+                 * configuration changes to the associated RIPE SDK.
+                 */
+                configData: this.config,
+                /**
+                 * Parts of the model to be used for the internal sync
+                 * operation.
+                 */
+                partsData: this.parts,
+                /**
+                 * Initials to be used for the internal sync operation.
+                 */
+                initialsData: this.initials,
+                /**
+                 * Engraving to be used for the internal sync operation.
+                 */
+                engravingData: this.engraving,
+                /**
+                 * Initials extra to be used for the internal sync operation.
+                 */
+                initialsExtraData: this.initialsExtra,
+                /**
+                 * Structure to be used for the internal sync operation.
+                 */
+                structureData: this.structure,
+                /**
+                 * Flag that controls if the initial loading process for
+                 * the configurator is still running.
+                 */
+                loading: true,
+                /**
+                 * Flag that controls if the configuring process is
+                 * still running.
+                 */
+                configuring: false
+            };
+        }
+
         /**
          * Initializes RIPE instance if it does not exists and
          * configures it with the given brand, model, version
@@ -41,11 +245,11 @@ export const LogicMixin = superclass =>
                 if (this.equalParts(parts, this.partsData)) return;
                 if (this.structureData) {
                     const structure = await this.ripeData.getStructure();
-                    this.setState({ structureData: structure });
+                    this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
                 } else {
                     this.setState({
                         partsData: JSON.parse(JSON.stringify(this.state.ripeData.parts))
-                    });
+                    }, () => this.props.onUpdateParts(parts));
                 }
             });
 
@@ -58,11 +262,14 @@ export const LogicMixin = superclass =>
                 }
                 if (this.state.structureData) {
                     const structure = await this.ripeData.getStructure();
-                    this.setState({ structureData: structure });
+                    this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
                 } else {
                     this.setState({
                         initialsData: this.state.ripeData.initials,
                         engravingData: this.state.ripeData.engraving
+                    }, () => { 
+                        this.props.onUpdateInitials(this.state.ripeData.initials);
+                        this.props.onUpdateEngraving(this.state.ripeData.engraving);
                     });
                 }
             });
@@ -75,13 +282,13 @@ export const LogicMixin = superclass =>
                     }
                     if (this.state.structureData) {
                         const structure = await this.ripeData.getStructure();
-                        this.setState({ structureData: structure });
+                        this.setState({ structureData: structure }, () => this.props.onUpdateStructure(structure));
                     } else {
                         this.setState({
                             initialsExtraData: JSON.parse(
                                 JSON.stringify(this.state.ripeData.initialsExtra)
                             )
-                        });
+                        }, () => this.props.onUpdateInitialsExtra(this.state.ripeData.initialsExtra));
                     }
                 }
             );
@@ -148,7 +355,7 @@ export const LogicMixin = superclass =>
                     // configures the SDK with the structure and currency values
                     // to allow only one call to make the whole setup, with currency
                     // included
-                    await this.ripeData.config(structure.brand, structure.model, {
+                    await this.state.ripeData.config(structure.brand, structure.model, {
                         ...structure,
                         currency: currency ? currency.toUpperCase() : null
                     });
@@ -171,10 +378,10 @@ export const LogicMixin = superclass =>
                 // the configuration before does not calls the update with
                 // the personalization
                 if (initials) {
-                    await this.ripeData.setInitials(initials, engraving);
+                    await this.state.ripeData.setInitials(initials, engraving);
                 }
                 if (initialsExtra) {
-                    await this.ripeData.setInitialsExtra(initialsExtra);
+                    await this.state.ripeData.setInitialsExtra(initialsExtra);
                 }
             } finally {
                 this.setState({ configuring: false }, () => {

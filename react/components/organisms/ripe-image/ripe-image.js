@@ -9,55 +9,7 @@ import "./ripe-image.css";
 export class RipeImage extends mix(Component).with(LogicMixin) {
     static get propTypes() {
         return {
-            /**
-             * An initialized RIPE instance form the RIPE SDK, if not defined,
-             * a new SDK instance will be initialized.
-             */
-            ripe: PropTypes.object,
-            /**
-             * The brand of the model.
-             */
-            brand: PropTypes.string,
-            /**
-             * The name of the model.
-             */
-            model: PropTypes.string,
-            /**
-             * The version of the build.
-             */
-            version: PropTypes.number,
-            /**
-             * The currency being used for the price of the model.
-             */
-            currency: PropTypes.string,
-            /**
-             * Indicates that the component should apply the config internally
-             * on component initialization.
-             */
-            config: PropTypes.bool,
-            /**
-             * The parts of the customized build as a dictionary mapping the
-             * name of the part to an object of material and color.
-             */
-            parts: PropTypes.object,
-            /**
-             * The initials value to be used in the RIPE instance.
-             */
-            initials: PropTypes.string,
-            /**
-             * The engraving value to be used in the RIPE instance.
-             */
-            engraving: PropTypes.string,
-            /**
-             * The set of (initials, engraving) per initials group
-             * to be used in the RIPE instance.
-             */
-            initialsExtra: PropTypes.object,
-            /**
-             * The normalized structure that uniquely represents
-             * the configuration "situation".
-             */
-            structure: PropTypes.object,
+            ...this._propTypes,
             /**
              * The name of the frame to be shown in the configurator using
              * the normalized frame format (eg: side-1).
@@ -298,74 +250,13 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             /**
              * Style to be applied to the image, used for zoom application.
              */
-            style: PropTypes.object,
-            /**
-             * Callback called when the brand of the model is changed.
-             */
-            onUpdateBrand: PropTypes.func,
-            /**
-             * Callback called when the model is changed.
-             */
-            onUpdateModel: PropTypes.func,
-            /**
-             * Callback called when the version is changed.
-             */
-            onUpdateVersion: PropTypes.func,
-            /**
-             * Callback called when the parts of the model are changed. This
-             * can be due to restrictions and rules of the model when applying
-             * a certain customization.
-             */
-            onUpdateParts: PropTypes.func,
-            /**
-             * Callback called when the initials of the model are changed.
-             */
-            onUpdateInitials: PropTypes.func,
-            /**
-             * Callback called when the engraving of the model is changed.
-             */
-            onUpdateEngraving: PropTypes.func,
-            /**
-             * Callback called when the initials extra of the model are changed.
-             */
-            onUpdateInitialsExtra: PropTypes.func,
-            /**
-             * Callback called when the currency of the model is changed.
-             */
-            onUpdateCurrency: PropTypes.func,
-            /**
-             * Callback when the image is loading.
-             */
-            onLoading: PropTypes.func,
-            /**
-             * Callback when the RIPE instance is configuring.
-             */
-            onConfiguring: PropTypes.func,
-            /**
-             * Callback when the configurator has finished loading,
-             * when it is possible to visualize it or when an error occurred.
-             */
-            onLoaded: PropTypes.func,
-            /**
-             * Callback when the RIPE instance ends its configuration.
-             */
-            onConfigured: PropTypes.func
+            style: PropTypes.object
         };
     }
 
     static get defaultProps() {
         return {
-            ripe: null,
-            brand: null,
-            model: null,
-            version: null,
-            currency: null,
-            config: true,
-            parts: null,
-            initials: null,
-            engraving: null,
-            initialsExtra: null,
-            structure: null,
+            ...this._defaultProps,
             frame: null,
             size: null,
             format: null,
@@ -417,87 +308,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             offsets: null,
             curve: null,
             name: null,
-            style: {},
-            onUpdateBrand: brand => {},
-            onUpdateModel: model => {},
-            onUpdateVersion: version => {},
-            onUpdateParts: parts => {},
-            onUpdateInitials: initials => {},
-            onUpdateEngraving: engraving => {},
-            onUpdateInitialsExtra: initialsExtra => {},
-            onUpdateCurrency: currency => {},
-            onLoading: () => {},
-            onConfiguring: () => {},
-            onLoaded: () => {},
-            onConfigured: () => {}
-        };
-    }
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            /**
-             * RIPE instance, which can be later initialized
-             * if the given prop is not defined.
-             */
-            ripeData: this.ripe,
-            /**
-             * Brand to be used for the internal sync operation.
-             */
-            brandData: this.brand,
-            /**
-             * Model to be used for the internal sync operation.
-             */
-            modelData: this.model,
-            /**
-             * 3DB version to be used for the internal sync operation.
-             */
-            versionData: this.version,
-            /**
-             * Currency to be used for the internal sync operation.
-             */
-            currencyData: this.currency,
-            /**
-             * Reflects whether this component should apply
-             * configuration changes to the associated RIPE SDK.
-             */
-            configData: this.config,
-            /**
-             * Parts of the model to be used for the internal sync
-             * operation.
-             */
-            partsData: this.parts,
-            /**
-             * Initials to be used for the internal sync operation.
-             */
-            initialsData: this.initials,
-            /**
-             * Engraving to be used for the internal sync operation.
-             */
-            engravingData: this.engraving,
-            /**
-             * Initials extra to be used for the internal sync operation.
-             */
-            initialsExtraData: this.initialsExtra,
-            /**
-             * Structure to be used for the internal sync operation.
-             */
-            structureData: this.structure,
-            /**
-             * Flag that controls if the initial loading process for
-             * the configurator is still running.
-             */
-            loading: true,
-            /**
-             * Flag that controls if the configuring process is
-             * still running.
-             */
-            configuring: false,
-            /**
-             * The image created by the Ripe SDK, currently being shown.
-             */
-            image: null
+            style: {}
         };
     }
 
@@ -587,7 +398,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         if (prevProps.initialsBuilder !== this.props.initialsBuilder) {
             this.image.setInitialsBuilder(this.props.initialsBuilder);
         }
-        await this._updateConfigurator(this.props, prevProps);
+        await this._updateImage(this.props, prevProps);
     }
 
     async componentWillUnmount() {
@@ -595,7 +406,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
         this.image = null;
     }
 
-    async _updateConfigurator(props, prevProps) {
+    async _updateImage(props, prevProps) {
         if (
             prevProps.format !== props.format ||
             prevProps.crop !== props.crop ||
@@ -642,7 +453,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             prevProps.shadow !== props.shadow ||
             prevProps.shadowColor !== props.shadowColor ||
             prevProps.shadowOffset !== props.shadowOffset ||
-            prevProps.offsets !== props.offsets || // @TODO: compare objects
+            JSON.stringify(prevProps.offsets) !== JSON.stringify(props.offsets) ||
             prevProps.curve !== props.curve
         ) {
             await this.image.updateOptions({

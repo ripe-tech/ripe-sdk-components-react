@@ -95,11 +95,6 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
              */
             price: null,
             /**
-             * The price of the current configuration of the model
-             * in string format, including the currency symbol.
-             */
-            priceText: null,
-            /**
              * The error raised when fetching the price.
              */
             error: null
@@ -119,6 +114,10 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
         });
 
         this.props.onLoaded();
+    }
+
+    async componentDidUpdate(prevProps) {
+        this._componentDidUpdate(prevProps);
     }
 
     async componentWillUnmount() {

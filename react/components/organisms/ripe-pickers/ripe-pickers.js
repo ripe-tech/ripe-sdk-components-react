@@ -25,7 +25,6 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     }
 
     constructor(props) {
-        console.log("constructor pickers", props.ripe.brand);
         super(props);
 
         this.state = {

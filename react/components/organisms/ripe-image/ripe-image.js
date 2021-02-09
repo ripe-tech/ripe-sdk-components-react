@@ -367,7 +367,12 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              * Flag that controls if the initial loading process for
              * the configurator is still running.
              */
-            loading: true
+            loading: true,
+            /**
+             * Flag that controls if the configuring process is
+             * still running.
+             */
+            configuring: false
         };
     }
 

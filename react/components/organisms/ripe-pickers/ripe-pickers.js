@@ -133,7 +133,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     }
 
     async componentDidUpdate(prevProps) {
-        this._componentDidUpdate(prevProps);
+        await this._componentDidUpdate(prevProps);
     }
 
     async componentWillUnmount() {

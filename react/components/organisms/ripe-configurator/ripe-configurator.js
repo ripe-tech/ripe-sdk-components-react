@@ -161,6 +161,11 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              */
             loading: true,
             /**
+             * Flag that controls if the configuring process is
+             * still running.
+             */
+            configuring: false,
+            /**
              * The frame that is currently being shown in the
              * configurator.
              */

@@ -438,9 +438,17 @@ export const LogicMixin = superclass =>
         }
 
         async _componentDidUpdate(prevProps) {
-            if (!this.state.ripeData || !this.state.configData || this.state.configuring) return;
+            if (!this.state.ripeData || !this.state.configData) return;
 
-            if (!this.equalParts(prevProps.parts, this.props.parts)) {
+            if (this.props.structure && !this.equalConfigOptions(prevProps, this.props)) {
+                this._updateConfigOptions(prevProps);
+            }
+
+            if (!this.equalConfigOptionsStructure(prevProps, this.props)) {
+                this._updateConfigOptionsStructure(prevProps);
+            }
+
+            if (!this.state.configuring && !this.equalParts(prevProps.parts, this.props.parts)) {
                 this._updateParts(this.props.parts);
             }
 
@@ -454,14 +462,6 @@ export const LogicMixin = superclass =>
 
             if (!this.equalInitialsExtra(prevProps.initialsExtra, this.props.initialsExtra)) {
                 this._updateInitialsExtra(this.props.initialsExtra);
-            }
-
-            if (!this.equalConfigOptionsStructure(prevProps, this.props)) {
-                this._updateConfigOptionsStructure(prevProps);
-            }
-
-            if (!this.equalConfigOptions(prevProps, this.props)) {
-                this._updateConfigOptions(prevProps);
             }
         }
 

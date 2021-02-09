@@ -117,7 +117,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
     }
 
     async componentDidUpdate(prevProps) {
-        this._componentDidUpdate(prevProps);
+        await this._componentDidUpdate(prevProps);
     }
 
     async componentWillUnmount() {

@@ -16,7 +16,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
             /**
              * Callback called when a error happens while fetching the price.
              */
-            onPriceError: PropTypes.func
+            onErrorPrice: PropTypes.func
         };
     }
 
@@ -24,7 +24,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
         return {
             ...this._defaultProps,
             onUpdatePrice: price => {},
-            onPriceError: error => {}
+            onErrorPrice: value => {}
         };
     }
 
@@ -110,7 +110,7 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
             this.setState({ error: null, price: price }, () => this.props.onUpdatePrice(price));
         });
         this.onPriceError = this.state.ripeData.bind("price_error", error => {
-            this.setState({ error: error, price: null }, () => this.props.onPriceError(error));
+            this.setState({ error: error, price: null }, () => this.props.onErrorPrice(error));
         });
 
         this.props.onLoaded();

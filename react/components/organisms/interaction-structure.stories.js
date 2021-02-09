@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, text, select } from "@storybook/addon-knobs";
 import { Ripe } from "ripe-sdk";
@@ -9,6 +10,34 @@ import { RipePrice } from "./ripe-price";
 import { RipePickers } from "./ripe-pickers";
 
 class Wrapper extends Component {
+    static get propTypes() {
+        return {
+            brand: PropTypes.string,
+            model: PropTypes.string,
+            version: PropTypes.number,
+            parts: PropTypes.object,
+            initials: PropTypes.string,
+            engraving: PropTypes.string,
+            currency: PropTypes.string,
+            frame: PropTypes.string,
+            ripe: PropTypes.object
+        };
+    }
+
+    static get defaultProps() {
+        return {
+            brand: null,
+            model: null,
+            version: null,
+            parts: null,
+            initials: null,
+            engraving: null,
+            currency: null,
+            frame: null,
+            ripe: null
+        };
+    }
+
     constructor(props) {
         super(props);
 
@@ -19,22 +48,24 @@ class Wrapper extends Component {
                 version: props.version,
                 parts: props.parts,
                 initials: props.initials,
-                engraving: props.engraving,
+                engraving: props.engraving
             },
             currencyData: props.currency,
             frameData: props.frame,
             ripeData: props.ripe
-        }
+        };
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.brand !== this.props.brand ||
+        if (
+            prevProps.brand !== this.props.brand ||
             prevProps.model !== this.props.model ||
             prevProps.version !== this.props.version ||
             prevProps.initials !== this.props.initials ||
             prevProps.engraving !== this.props.engraving ||
             prevProps.currency !== this.props.currency ||
-            prevProps.frame !== this.props.frame) {
+            prevProps.frame !== this.props.frame
+        ) {
             this.setState({
                 structureData: {
                     brand: this.props.brand,
@@ -42,12 +73,11 @@ class Wrapper extends Component {
                     version: this.props.version,
                     parts: this.props.parts,
                     initials: this.props.initials,
-                    engraving: this.props.engraving,
+                    engraving: this.props.engraving
                 },
                 currencyData: this.props.currency,
                 frameData: this.props.frame
             });
-
         }
     }
 
@@ -62,7 +92,12 @@ class Wrapper extends Component {
                     config={true}
                     style={{ display: "inline-block" }}
                 />
-                <RipeImage frame={this.state.frameData} showInitials={true} size={400} ripe={this.state.ripeData} />
+                <RipeImage
+                    frame={this.state.frameData}
+                    showInitials={true}
+                    size={400}
+                    ripe={this.state.ripeData}
+                />
                 <RipePrice ripe={this.state.ripeData} />
                 <RipePickers ripe={this.state.ripeData} />
             </div>
@@ -112,5 +147,5 @@ storiesOf("Organisms", module)
                     ripe={ripe}
                 />
             </div>
-        )
+        );
     });

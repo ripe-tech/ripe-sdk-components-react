@@ -136,6 +136,10 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
         });
     }
 
+    async componentDidUpdate(prevProps) {
+        this._componentDidUpdate(prevProps);
+    }
+
     async componentWillUnmount() {
         if (this.onPreConfig) this.state.ripeData.unbind("pre_config", this.onPreConfigEvent);
         if (this.onChoices) this.state.ripeData.unbind("choices", this.onChoices);

@@ -221,6 +221,8 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     }
 
     async componentDidUpdate(prevProps) {
+        await this._componentDidUpdate(prevProps);
+
         if (prevProps.size !== this.props.size) {
             this._resize(this.props.size);
         }

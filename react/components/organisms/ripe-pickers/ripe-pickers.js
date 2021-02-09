@@ -113,9 +113,6 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
 
         await this.setupRipe();
 
-        console.log("pickers", this.props.ripe.brand);
-        console.log("pickers state", this.state.ripeData.brand);
-
         this.onChoices = this.state.ripeData.bind("choices", choices => {
             this.setState({ choices: choices });
         });
@@ -132,7 +129,6 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
 
         this.setState({ choices: this.state.ripeData.choices }, () => {
             this.props.onLoaded();
-            console.log(this.state.ripeData.choices);
         });
     }
 

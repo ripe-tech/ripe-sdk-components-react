@@ -60,7 +60,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              * The format of the configurator image, (eg: png, jpg, svg, etc.).
              */
             format: PropTypes.string,
-            
+
             /**
              * Style to be applied to the configurator.
              */

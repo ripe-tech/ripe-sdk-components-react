@@ -48,13 +48,9 @@ storiesOf("Organisms", module)
                     size={400}
                     ripe={ripe}
                     config={true}
+                    style={{ display: "inline-block" }}
                 />
-                <RipeImage
-                    frame={frame}
-                    showInitials={true}
-                    size={400}
-                    ripe={ripe}
-                />
+                <RipeImage frame={frame} showInitials={true} size={400} ripe={ripe} />
                 <RipePrice ripe={ripe} />
                 <RipePickers ripe={ripe} />
             </div>

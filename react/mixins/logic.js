@@ -154,7 +154,7 @@ export const LogicMixin = superclass =>
             const configData = this.props.config === null ? isNewInstance : this.props.config;
 
             const promisedSetState = state => new Promise(resolve => this.setState(state, resolve));
-            await promisedSetState({ configData: configData});
+            await promisedSetState({ configData: configData });
 
             // in case there's no internal RIPE instance already
             // available then created a new one with default config

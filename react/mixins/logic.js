@@ -119,7 +119,7 @@ export const LogicMixin = superclass =>
                 model: null,
                 version: null,
                 currency: null,
-                config: true,
+                config: null,
                 parts: null,
                 initials: null,
                 engraving: null,
@@ -152,13 +152,13 @@ export const LogicMixin = superclass =>
             // best possible decision on if the instance should be configured
             const isNewInstance = Boolean(!this.state.ripeData && !global.ripe);
             const configData = this.props.config === null ? isNewInstance : this.props.config;
-            this.setState({ configData: configData });
+
+            const promisedSetState = state => new Promise(resolve => this.setState(state, resolve));
+            await promisedSetState({ configData: configData});
 
             // in case there's no internal RIPE instance already
             // available then created a new one with default config
             if (!this.state.ripeData) {
-                const promisedSetState = state =>
-                    new Promise(resolve => this.setState(state, resolve));
                 await promisedSetState({ ripeData: new Ripe() });
             }
 
@@ -179,7 +179,7 @@ export const LogicMixin = superclass =>
             this.onParts = this.state.ripeData.bind("parts", async parts => {
                 if (this.equalParts(parts, this.partsData)) return;
                 if (this.structureData) {
-                    const structure = await this.ripeData.getStructure();
+                    const structure = await this.state.ripeData.getStructure();
                     this.setState({ structureData: structure }, () =>
                         this.props.onUpdateStructure(structure)
                     );
@@ -201,7 +201,7 @@ export const LogicMixin = superclass =>
                     return;
                 }
                 if (this.state.structureData) {
-                    const structure = await this.ripeData.getStructure();
+                    const structure = await this.state.ripeData.getStructure();
                     this.setState({ structureData: structure }, () =>
                         this.props.onUpdateStructure(structure)
                     );
@@ -226,7 +226,7 @@ export const LogicMixin = superclass =>
                         return;
                     }
                     if (this.state.structureData) {
-                        const structure = await this.ripeData.getStructure();
+                        const structure = await this.state.ripeData.getStructure();
                         this.setState({ structureData: structure }, () =>
                             this.props.onUpdateStructure(structure)
                         );
@@ -467,7 +467,7 @@ export const LogicMixin = superclass =>
 
         async _copyRipeData() {
             if (this.props.structure) {
-                const structure = await this.ripeData.getStructure();
+                const structure = await this.state.ripeData.getStructure();
                 this.setState(
                     {
                         structureData: structure,

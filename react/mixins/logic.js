@@ -437,54 +437,32 @@ export const LogicMixin = superclass =>
             );
         }
 
-        _subsetCompareParts(base, reference) {
-            for (const name of Object.keys(base)) {
-                // retrieves the part information for the current
-                // name in iteration for both the base and the
-                // reference set values (to be compared)
-                const partB = base[name];
-                const partR = reference[name];
+        async _componentDidUpdate(prevProps) {
+            if (!this.state.ripeData || !this.state.configData || this.state.configuring) return;
 
-                // if for a certain base part the corresponding
-                // part does not exist in the reference then the
-                // reference is considered to be invalid
-                if (!partR) {
-                    return false;
-                }
-
-                // in case either the initials or the engraving is
-                // not matching then the subset is invalid
-                if (partB.material !== partR.material || partB.color !== partR.color) {
-                    return false;
-                }
+            if (!this.equalParts(prevProps.parts, this.props.parts)) {
+                this._updateParts(this.props.parts);
             }
 
-            return true;
-        }
-
-        _subsetCompareInitials(base, reference) {
-            for (const name of Object.keys(base)) {
-                // retrieves the group information for the current
-                // name in iteration for both the base and the
-                // reference set values (to be compared)
-                const groupB = base[name];
-                const groupR = reference[name];
-
-                // if for a certain base group the corresponding
-                // group does not exist in the reference then the
-                // reference is considered to be invalid
-                if (!groupR) {
-                    return false;
-                }
-
-                // in case either the initials or the engraving is
-                // not matching then the subset is invalid
-                if (groupB.initials !== groupR.initials || groupB.engraving !== groupR.engraving) {
-                    return false;
-                }
+            if (prevProps.initials !== this.props.initials) {
+                this._updateInitials(this.props.initials);
             }
 
-            return true;
+            if (prevProps.engraving !== this.props.engraving) {
+                this._updateEngraving(this.props.engraving);
+            }
+
+            if (!this.equalInitialsExtra(prevProps.initialsExtra, this.props.initialsExtra)) {
+                this._updateInitialsExtra(this.props.initialsExtra);
+            }
+
+            if (!this.equalConfigOptionsStructure(prevProps, this.props)) {
+                this._updateConfigOptionsStructure(prevProps);
+            }
+
+            if (!this.equalConfigOptions(prevProps, this.props)) {
+                this._updateConfigOptions(prevProps);
+            }
         }
 
         async _copyRipeData() {
@@ -526,82 +504,6 @@ export const LogicMixin = superclass =>
                     }
                 );
             }
-        }
-
-        async _componentDidUpdate(prevProps) {
-            if (!this.state.ripeData || !this.state.configData || this.state.configuring) return;
-
-            if (!this.equalParts(prevProps.parts, this.props.parts)) {
-                this._updateParts(this.props.parts);
-            }
-
-            if (prevProps.initials !== this.props.initials) {
-                this._updateInitials(this.props.initials);
-            }
-
-            if (prevProps.engraving !== this.props.engraving) {
-                this._updateEngraving(this.props.engraving);
-            }
-
-            if (!this.equalInitialsExtra(prevProps.initialsExtra, this.props.initialsExtra)) {
-                this._updateInitialsExtra(this.props.initialsExtra);
-            }
-
-            if (!this.equalConfigOptionsStructure(prevProps, this.props)) {
-                this._updateConfigOptionsStructure(prevProps);
-            }
-
-            if (!this.equalConfigOptions(prevProps, this.props)) {
-                this._updateConfigOptions(prevProps);
-            }
-        }
-
-        _updateParts(parts) {
-            this.setState(
-                {
-                    partsData: parts
-                },
-                async () => {
-                    await this.state.ripeData.setParts(parts);
-                    await this.props.onUpdateParts(parts);
-                }
-            );
-        }
-
-        _updateInitials(initials) {
-            this.setState(
-                {
-                    initialsData: initials
-                },
-                async () => {
-                    await this.state.ripeData.setInitials(initials, this.state.engravingData);
-                    await this.props.onUpdateInitials(initials);
-                }
-            );
-        }
-
-        _updateEngraving(engraving) {
-            this.setState(
-                {
-                    engravingData: engraving
-                },
-                async () => {
-                    await this.state.ripeData.setInitials(this.state.initialsData, engraving);
-                    await this.props.onUpdateEngraving(engraving);
-                }
-            );
-        }
-
-        _updateInitialsExtra(initialsExtra) {
-            this.setState(
-                {
-                    initialsExtraData: initialsExtra
-                },
-                async () => {
-                    await this.state.ripeData.setInitialsExtra(this.state.initialsExtraData);
-                    await this.props.onUpdateInitialsExtra(initialsExtra);
-                }
-            );
         }
 
         async _updateConfigOptions(previous) {
@@ -693,5 +595,103 @@ export const LogicMixin = superclass =>
                 structure: !equalStructure ? structure : undefined,
                 currency: !equalCurrency ? this.props.currency : undefined
             });
+        }
+
+        _subsetCompareParts(base, reference) {
+            for (const name of Object.keys(base)) {
+                // retrieves the part information for the current
+                // name in iteration for both the base and the
+                // reference set values (to be compared)
+                const partB = base[name];
+                const partR = reference[name];
+
+                // if for a certain base part the corresponding
+                // part does not exist in the reference then the
+                // reference is considered to be invalid
+                if (!partR) {
+                    return false;
+                }
+
+                // in case either the initials or the engraving is
+                // not matching then the subset is invalid
+                if (partB.material !== partR.material || partB.color !== partR.color) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        _subsetCompareInitials(base, reference) {
+            for (const name of Object.keys(base)) {
+                // retrieves the group information for the current
+                // name in iteration for both the base and the
+                // reference set values (to be compared)
+                const groupB = base[name];
+                const groupR = reference[name];
+
+                // if for a certain base group the corresponding
+                // group does not exist in the reference then the
+                // reference is considered to be invalid
+                if (!groupR) {
+                    return false;
+                }
+
+                // in case either the initials or the engraving is
+                // not matching then the subset is invalid
+                if (groupB.initials !== groupR.initials || groupB.engraving !== groupR.engraving) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        _updateParts(parts) {
+            this.setState(
+                {
+                    partsData: parts
+                },
+                async () => {
+                    await this.state.ripeData.setParts(parts);
+                    await this.props.onUpdateParts(parts);
+                }
+            );
+        }
+
+        _updateInitials(initials) {
+            this.setState(
+                {
+                    initialsData: initials
+                },
+                async () => {
+                    await this.state.ripeData.setInitials(initials, this.state.engravingData);
+                    await this.props.onUpdateInitials(initials);
+                }
+            );
+        }
+
+        _updateEngraving(engraving) {
+            this.setState(
+                {
+                    engravingData: engraving
+                },
+                async () => {
+                    await this.state.ripeData.setInitials(this.state.initialsData, engraving);
+                    await this.props.onUpdateEngraving(engraving);
+                }
+            );
+        }
+
+        _updateInitialsExtra(initialsExtra) {
+            this.setState(
+                {
+                    initialsExtraData: initialsExtra
+                },
+                async () => {
+                    await this.state.ripeData.setInitialsExtra(this.state.initialsExtraData);
+                    await this.props.onUpdateInitialsExtra(initialsExtra);
+                }
+            );
         }
     };

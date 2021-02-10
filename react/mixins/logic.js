@@ -440,7 +440,7 @@ export const LogicMixin = superclass =>
         async _componentDidUpdate(prevProps) {
             if (!this.state.ripeData || !this.state.configData) return;
 
-            if (this.props.structure && !this.equalConfigOptions(prevProps, this.props)) {
+            if (!this.props.structure && !this.equalConfigOptions(prevProps, this.props)) {
                 this._updateConfigOptions(prevProps);
             }
 

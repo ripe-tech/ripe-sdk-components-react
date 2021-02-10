@@ -212,20 +212,23 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
     _onSelectPartChange(value) {
         if (!value) return;
 
+        this.setState({ selectedPart: value, selectedMaterial: null }, () =>
+            this.props.onUpdateHighlightedPart(value)
+        );
+
         const materialOptions = this._materialOptions();
         const selectedMaterial = materialOptions.length === 1 ? materialOptions[0].value : null;
-        this.setState(
-            { selectedPart: value, selectedMaterial: selectedMaterial, selectedColor: null },
-            () => this.props.onUpdateHighlightedPart(value)
-        );
+        this.setState({ selectedMaterial: selectedMaterial, selectedColor: null });
     }
 
     _onSelectMaterialChange(value) {
         if (!value) return;
 
+        this.setState({ selectedMaterial: value, selectedColor: null });
+
         const colorOptions = this._colorOptions();
         const selectedColor = colorOptions.length === 1 ? colorOptions[0].value : null;
-        this.setState({ selectedMaterial: value, selectedColor: selectedColor });
+        this.setState({ selectedColor: selectedColor });
     }
 
     _onSelectColorChange(value) {
@@ -253,6 +256,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
             <div className="ripe-pickers">
                 {this._partsOptions().length > 0 && (
                     <select
+                        className="select select-parts"
                         value={this.state.selectedPart ? this.state.selectedPart : ""}
                         onChange={event => this._onSelectPartChange(event.target.value)}
                     >
@@ -267,6 +271,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
                     </select>
                 )}
                 <select
+                    className="select select-materials"
                     value={this.state.selectedMaterial ? this.state.selectedMaterial : ""}
                     onChange={event => this._onSelectMaterialChange(event.target.value)}
                 >
@@ -281,6 +286,7 @@ export class RipePickers extends mix(Component).with(LogicMixin) {
                         ))}
                 </select>
                 <select
+                    className="select select-colors"
                     value={this.state.selectedColor ? this.state.selectedColor : ""}
                     onChange={event => this._onSelectColorChange(event.target.value)}
                 >

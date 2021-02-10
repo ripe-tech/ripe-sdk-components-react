@@ -12,27 +12,7 @@ import "./ripe-configurator.css";
 export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     static get propTypes() {
         return {
-            /**
-             * The brand of the model.
-             */
-            brand: PropTypes.string,
-            /**
-             * The name of the model.
-             */
-            model: PropTypes.string,
-            /**
-             * The version of the build.
-             */
-            version: PropTypes.number,
-            /**
-             * Indicates that the component should apply the config internally.
-             */
-            config: PropTypes.bool,
-            /**
-             * The parts of the customized build as a dictionary mapping the
-             * name of the part to an object of material and color.
-             */
-            parts: PropTypes.object,
+            ...this._propTypes,
             /**
              * The name of the frame to be shown in the configurator using
              * the normalized frame format (eg: side-1).
@@ -80,23 +60,17 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              * The format of the configurator image, (eg: png, jpg, svg, etc.).
              */
             format: PropTypes.string,
+
             /**
-             * An initialized RIPE instance form the RIPE SDK, if not defined,
-             * a new SDK instance will be initialized.
+             * Style to be applied to the configurator.
              */
-            ripe: PropTypes.object,
+            style: PropTypes.object,
             /**
              * Callback called when the frame in the configurator is changed,
              * both by the user dragging the configurator or when a new
              * frame prop is provided.
              */
             onUpdateFrame: PropTypes.func,
-            /**
-             * Callback called when the parts of the model are changed. This
-             * can be due to restrictions and rules of the model when applying
-             * a certain customization.
-             */
-            onUpdateParts: PropTypes.func,
             /**
              * Callback when a part of the model in the configurator is selected.
              */
@@ -106,26 +80,13 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              * normally with a mouse hover of by changing the prop. Only functional
              * when masks are enabled.
              */
-            onUpdateHighlightedPart: PropTypes.func,
-            /**
-             * Callback when the configurator is loading.
-             */
-            onLoading: PropTypes.func,
-            /**
-             * Callback when the configurator has finished loading,
-             * when it is possible to visualize it or when an error occurred.
-             */
-            onLoaded: PropTypes.func
+            onUpdateHighlightedPart: PropTypes.func
         };
     }
 
     static get defaultProps() {
         return {
-            brand: null,
-            model: null,
-            version: null,
-            config: true,
-            parts: null,
+            ...this._defaultProps,
             frame: null,
             size: null,
             loader: true,
@@ -136,13 +97,10 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             duration: null,
             animation: null,
             format: null,
-            ripe: null,
+            style: {},
             onUpdateFrame: frame => {},
-            onUpdateParts: parts => {},
             onUpdateSelectedPart: part => {},
-            onUpdateHighlightedPart: part => {},
-            onLoading: () => {},
-            onLoaded: () => {}
+            onUpdateHighlightedPart: part => {}
         };
     }
 
@@ -151,56 +109,82 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
 
         this.state = {
             /**
-             * The frame that is currently being shown in the
-             * configurator.
+             * RIPE instance, which can be later initialized
+             * if the given prop is not defined.
              */
-            frameData: this.props.frame,
+            ripeData: props.ripe,
+            /**
+             * Brand to be used for the internal sync operation.
+             */
+            brandData: props.brand,
+            /**
+             * Model to be used for the internal sync operation.
+             */
+            modelData: props.model,
+            /**
+             * 3DB version to be used for the internal sync operation.
+             */
+            versionData: props.version,
+            /**
+             * Currency to be used for the internal sync operation.
+             */
+            currencyData: props.currency,
+            /**
+             * Reflects whether this component should apply
+             * configuration changes to the associated RIPE SDK.
+             */
+            configData: props.config,
+            /**
+             * Parts of the model to be used for the internal sync
+             * operation.
+             */
+            partsData: props.parts,
+            /**
+             * Initials to be used for the internal sync operation.
+             */
+            initialsData: props.initials,
+            /**
+             * Engraving to be used for the internal sync operation.
+             */
+            engravingData: props.engraving,
+            /**
+             * Initials extra to be used for the internal sync operation.
+             */
+            initialsExtraData: props.initialsExtra,
+            /**
+             * Structure to be used for the internal sync operation.
+             */
+            structureData: props.structure,
             /**
              * Flag that controls if the initial loading process for
              * the configurator is still running.
              */
             loading: true,
             /**
+             * Flag that controls if the configuring process is
+             * still running.
+             */
+            configuring: false,
+            /**
+             * The frame that is currently being shown in the
+             * configurator.
+             */
+            frameData: props.frame,
+            /**
              * Part of the model that is currently selected.
              */
-            selectedPartData: this.props.selectedPart,
+            selectedPartData: props.selectedPart,
             /**
              * Part of the model that is currently highlighted.
              */
-            highlightedPartData: this.props.highlightedPart,
-            /**
-             * Parts of the model.
-             */
-            partsData: this.props.parts,
-            /**
-             * RIPE instance, which can be later initialized
-             * if the given prop is not defined.
-             */
-            ripeData: this.ripe
+            highlightedPartData: props.highlightedPart
         };
     }
 
     async componentDidMount() {
         this.props.onLoading();
 
-        await this._setupRipe();
-
-        // saves the model parts after the RIPE configuration so that
-        // possible changes due to restrictions can be communicated
-        // to the parent component
-        this.setState({ partsData: Object.assign({}, this.state.ripeData.parts) }, () =>
-            this.props.onUpdateParts(this.state.ripeData.parts)
-        );
-
-        this.state.ripeData.bind("selected_part", part => {
-            if (this.state.selectedPartData === part) return;
-            this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
-        });
-
-        this.state.ripeData.bind("parts", parts => {
-            if (this._equalParts(parts, this.state.partsData)) return;
-            this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
-        });
+        await this.setupRipe();
 
         this.configurator = this.state.ripeData.bindConfigurator(this.configuratorRef, {
             view: this.state.frameData ? this.state.frameData.split("-")[0] : null,
@@ -211,11 +195,13 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             sensitivity: this.props.sensitivity
         });
 
-        this.configurator.bind("highlighted_part", part => {
-            if (this.state.highlightedPartData === part) return;
-            this.setState({ highlightedPartData: part }, () =>
-                this.props.onUpdateHighlightedPart(part)
-            );
+        this.onPreConfigEvent = this.state.ripeData.bind("pre_config", () => {
+            this.setState({ loading: true }, () => this.props.onLoading());
+        });
+
+        this.state.ripeData.bind("selected_part", part => {
+            if (this.state.selectedPartData === part) return;
+            this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
         });
 
         this.configurator.bind("changed_frame", frame => {
@@ -231,18 +217,28 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             });
         });
 
+        this.configurator.bind("not_loaded", () => {
+            this.setState({ loading: false }, () => this.props.onLoaded());
+        });
+
+        this.configurator.bind("highlighted_part", part => {
+            if (this.state.highlightedPartData === part) return;
+            this.setState({ highlightedPartData: part }, () =>
+                this.props.onUpdateHighlightedPart(part)
+            );
+        });
+
         this._resize(this.props.size);
     }
 
     async componentDidUpdate(prevProps) {
+        await this._componentDidUpdate(prevProps);
+
         if (prevProps.size !== this.props.size) {
             this._resize(this.props.size);
         }
         if (prevProps.frame !== this.props.frame) {
             this._changeFrame(this.props.frame, prevProps.frame);
-        }
-        if (!this._equalParts(prevProps.parts, this.props.parts)) {
-            this._updateParts(this.props.parts);
         }
         if (prevProps.selectedPart !== this.props.selectedPart) {
             this.state.ripeData.selectPart(this.props.selectedPart);
@@ -251,21 +247,25 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             this._highlightPart(this.props.highlightedPart, prevProps.highlightedPart);
         }
         if (prevProps.useMasks !== this.props.useMasks) {
-            if (!this.configurator) return;
             this._updateUseMasks(this.props.useMasks);
         }
-        await this._updateConfiguration(this.props, prevProps);
         await this._updateConfigurator(this.props, prevProps);
     }
 
     async componentWillUnmount() {
         if (this.configurator) await this.state.ripeData.unbindConfigurator(this.configurator);
+        if (this.onPreConfigEvent && this.state.ripeData) {
+            this.state.ripeData.unbind("pre_config", this.onPreConfigEvent);
+        }
         this.configurator = null;
     }
 
     /**
      * Updates the configurator, showing the provided frame
      * with possible animation.
+     *
+     * @param {String} value The current frame.
+     * @param {String} previous The previous frame.
      */
     async _changeFrame(value, previous) {
         // in case the configurator is not currently ready
@@ -288,52 +288,18 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
         // only the visible instance of this component
         // should be sending events it's considered to
         // be the main/master one
-        if (this._elementDisplayed()) {
+        if (this._isElementDisplayed()) {
             this.props.onUpdateFrame(value);
         }
     }
 
     /**
-     * Re-sizes the configurator according to the current
-     * available container size (defined by parent).
+     * Verifies if values changed an, if so, updates
+     * the configurator with the given options.
+     *
+     * @param {Object} props Current props.
+     * @param {Object} prevProps Previous props.
      */
-    _resize(size) {
-        if (!size || !this.configurator) return;
-        this.configurator.resize(size);
-    }
-
-    _highlightPart(part, previousPart) {
-        this.configurator.lowlight(previousPart);
-        this.configurator.highlight(part);
-    }
-
-    _updateUseMasks(useMasks) {
-        if (useMasks) this.configurator.enableMasks();
-        else this.configurator.disableMasks();
-    }
-
-    _updateParts(parts) {
-        this.setState(
-            {
-                partsData: parts
-            },
-            async () => {
-                await this.props.onUpdateParts(parts);
-                await this._setPartsRipe(parts);
-            }
-        );
-    }
-
-    async _updateConfiguration(props, prevProps) {
-        if (
-            prevProps.brand !== props.brand ||
-            prevProps.model !== props.model ||
-            prevProps.version !== props.version
-        ) {
-            if (props.config) await this._configRipe();
-        }
-    }
-
     async _updateConfigurator(props, prevProps) {
         if (
             prevProps.sensitivity !== props.sensitivity ||
@@ -350,10 +316,43 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
         }
     }
 
-    _elementDisplayed() {
-        if (!this.configurator) {
-            return false;
-        }
+    /**
+     * Re-sizes the configurator according to the current
+     * available container size (defined by parent).
+     *
+     * @param {*} size The configurator size (in pixels).
+     */
+    _resize(size) {
+        if (!size || !this.configurator) return;
+        this.configurator.resize(size);
+    }
+
+    /**
+     * Removes the highlight of the previous part and
+     * highlights the chosen part.
+     *
+     * @param {String} part The part to be highlighted.
+     * @param {String} previousPart The part to be removed the highlight.
+     */
+    _highlightPart(part, previousPart) {
+        this.configurator.lowlight(previousPart);
+        this.configurator.highlight(part);
+    }
+
+    /**
+     * Updates the masks activation with the given value.
+     *
+     * @param {Boolean} useMasks Value that represents the
+     * activation or disabling of masks.
+     */
+    _updateUseMasks(useMasks) {
+        if (!this.configurator) return;
+        if (useMasks) this.configurator.enableMasks();
+        else this.configurator.disableMasks();
+    }
+
+    _isElementDisplayed() {
+        if (!this.configurator) return false;
         return getComputedStyle(this.configurator.element).display !== "none";
     }
 
@@ -365,7 +364,7 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
 
     render() {
         return (
-            <div className="ripe-configurator">
+            <div className="ripe-configurator" style={this.props.style}>
                 {this.props.loader && this.state.loading && (
                     <div className="loader-container" style={this._loaderStyle()}>
                         <Loader className="loader" loader="ball-scale-multiple" />

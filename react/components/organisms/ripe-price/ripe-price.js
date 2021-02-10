@@ -7,71 +7,24 @@ import { LogicMixin, MoneyMixin } from "../../../mixins";
 export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
     static get propTypes() {
         return {
-            /**
-             * The brand of the model.
-             */
-            brand: PropTypes.string,
-            /**
-             * The name of the model.
-             */
-            model: PropTypes.string,
-            /**
-             * The version of the build.
-             */
-            version: PropTypes.number,
-            /**
-             * Indicates that the component should apply the config internally.
-             */
-            config: PropTypes.bool,
-            /**
-             * The parts of the customized build as a dictionary mapping the
-             * name of the part to an object of material and color.
-             */
-            parts: PropTypes.object,
-            /**
-             * The currency being used for the price of the model.
-             */
-            currency: PropTypes.string.isRequired,
-            /**
-             * An initialized RIPE instance form the RIPE SDK, if not defined,
-             * a new SDK instance will be initialized.
-             */
-            ripe: PropTypes.object,
-            /**
-             * Callback called when the parts of the model are changed. This
-             * can be due to restrictions and rules of the model when applying
-             * a certain customization.
-             */
-            onUpdateParts: PropTypes.func,
+            ...this._propTypes,
             /**
              * Callback when the price of the model changes. It can be triggered
              * when the currency is changed or the model and its parts.
              */
             onUpdatePrice: PropTypes.func,
             /**
-             * Callback when the configurator is loading.
+             * Callback called when a error happens while fetching the price.
              */
-            onLoading: PropTypes.func,
-            /**
-             * Callback when the configurator has finished loading,
-             * when it is possible to visualize it or when an error occurred.
-             */
-            onLoaded: PropTypes.func
+            onErrorPrice: PropTypes.func
         };
     }
 
     static get defaultProps() {
         return {
-            brand: null,
-            model: null,
-            config: true,
-            version: null,
-            parts: null,
-            ripe: null,
-            onUpdateParts: parts => {},
+            ...this._defaultProps,
             onUpdatePrice: price => {},
-            onLoading: () => {},
-            onLoaded: () => {}
+            onErrorPrice: value => {}
         };
     }
 
@@ -80,106 +33,109 @@ export class RipePrice extends mix(Component).with(LogicMixin, MoneyMixin) {
 
         this.state = {
             /**
+             * RIPE instance, which can be later initialized
+             * if the given prop is not defined.
+             */
+            ripeData: props.ripe,
+            /**
+             * Brand to be used for the internal sync operation.
+             */
+            brandData: props.brand,
+            /**
+             * Model to be used for the internal sync operation.
+             */
+            modelData: props.model,
+            /**
+             * 3DB version to be used for the internal sync operation.
+             */
+            versionData: props.version,
+            /**
+             * Currency to be used for the internal sync operation.
+             */
+            currencyData: props.currency,
+            /**
+             * Reflects whether this component should apply
+             * configuration changes to the associated RIPE SDK.
+             */
+            configData: props.config,
+            /**
+             * Parts of the model to be used for the internal sync
+             * operation.
+             */
+            partsData: props.parts,
+            /**
+             * Initials to be used for the internal sync operation.
+             */
+            initialsData: props.initials,
+            /**
+             * Engraving to be used for the internal sync operation.
+             */
+            engravingData: props.engraving,
+            /**
+             * Initials extra to be used for the internal sync operation.
+             */
+            initialsExtraData: props.initialsExtra,
+            /**
+             * Structure to be used for the internal sync operation.
+             */
+            structureData: props.structure,
+            /**
+             * Flag that controls if the initial loading process for
+             * the configurator is still running.
+             */
+            loading: true,
+            /**
+             * Flag that controls if the configuring process is
+             * still running.
+             */
+            configuring: false,
+            /**
              * The price of the current configuration of the model
              * and is dependent on the current currency.
              */
             price: null,
             /**
-             * The price of the current configuration of the model
-             * in string format, including the currency symbol.
+             * The error raised when fetching the price.
              */
-            priceText: null,
-            /**
-             * Parts of the model.
-             */
-            partsData: this.props.parts,
-            /**
-             * Flag that controls if the initial loading process for
-             * the price is still running.
-             */
-            loading: true,
-            /**
-             * Ripe SDK instance, which can be later initialized
-             * if the given prop is not defined.
-             */
-            ripeData: this.ripe
+            error: null
         };
     }
 
     async componentDidMount() {
         this.props.onLoading();
 
-        await this._setupRipe();
+        await this.setupRipe();
 
-        // saves the model parts after the RIPE configuration so that
-        // possible changes due to restrictions can be communicated
-        // to the parent component
-        this.setState({ partsData: Object.assign({}, this.state.ripeData.parts) }, () =>
-            this.props.onUpdateParts(this.state.ripeData.parts)
-        );
-
-        this.state.ripeData.bind("parts", parts => {
-            if (this._equalParts(parts, this.state.partsData)) return;
-            this.setState({ partsData: parts }, () => this.props.onUpdateParts(parts));
+        this.onPrice = this.state.ripeData.bind("price", price => {
+            this.setState({ error: null, price: price }, () => this.props.onUpdatePrice(price));
+        });
+        this.onPriceError = this.state.ripeData.bind("price_error", error => {
+            this.setState({ error: error, price: null }, () => this.props.onErrorPrice(error));
         });
 
-        this.priceBind = this.state.ripeData.bind("price", value => this._onPriceChange(value));
+        this.props.onLoaded();
     }
 
     async componentDidUpdate(prevProps) {
-        if (prevProps.currency !== this.props.currency) {
-            if (this.props.config) this._configRipe();
-        }
-        if (!this._equalParts(prevProps.parts, this.props.parts)) {
-            this._updateParts(this.props.parts);
-        }
-        await this._updateConfiguration(this.props, prevProps);
+        await this._componentDidUpdate(prevProps);
     }
 
     async componentWillUnmount() {
-        if (this.priceBind) await this.state.ripeData.unbind("price", this.priceBind);
-        this.priceBind = null;
+        if (this.onPriceError) this.state.ripeData.unbind("price_error", this.onPriceError);
+        if (this.onPrice) this.state.ripeData.unbind("price", this.onPrice);
     }
 
-    _priceText(value) {
-        return this.formatMoney(value, this.props.currency);
-    }
-
-    _updateParts(parts) {
-        this.setState(
-            {
-                partsData: parts
-            },
-            async () => {
-                await this.props.onUpdateParts(parts);
-                await this._setPartsRipe(parts);
-            }
-        );
-    }
-
-    async _updateConfiguration(props, prevProps) {
-        if (
-            prevProps.brand !== props.brand ||
-            prevProps.model !== props.model ||
-            prevProps.version !== props.version
-        ) {
-            if (props.config) await this._configRipe();
-        }
-    }
-
-    _onPriceChange(value) {
-        const price = value.total.price_final;
-        this.setState({ price: price, priceText: this._priceText(price) }, () =>
-            this.props.onUpdatePrice(this._priceText())
-        );
-    }
-
-    _onLoad() {
-        this.setState({ loading: false }, () => this.props.onLoaded());
+    priceText() {
+        return this.state.error
+            ? "Error"
+            : this.formatMoney(
+                  this.state.price ? this.state.price.total.price_final : null,
+                  this.state.currencyData
+              );
     }
 
     render() {
-        return <div className="ripe-price">{this.state.priceText}</div>;
+        return <div className="ripe-price">{this.priceText()}</div>;
     }
 }
 

@@ -5,9 +5,9 @@ import { Ripe } from "ripe-sdk";
 
 import { RipeImage } from "./ripe-image";
 
-storiesOf("Components/Organisms/RipeImage", module)
+storiesOf("Components/Organisms/Ripe Image", module)
     .addDecorator(withKnobs)
-    .add("RipeImage", () => {
+    .add("Ripe Image", () => {
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);

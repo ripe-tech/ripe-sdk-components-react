@@ -4,9 +4,9 @@ import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
 
 import { RipeImageZoom } from "./ripe-image-zoom";
 
-storiesOf("Components/Organisms/RipeImageZoom", module)
+storiesOf("Components/Organisms/Ripe Image Zoom", module)
     .addDecorator(withKnobs)
-    .add("RipeImageZoom", () => {
+    .add("Ripe Image Zoom", () => {
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);

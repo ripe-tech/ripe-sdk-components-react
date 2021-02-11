@@ -4,9 +4,9 @@ import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
 
 import { RipeImageZoomHover } from "./ripe-image-zoom-hover";
 
-storiesOf("Components/Organisms/RipeImageZoomHover", module)
+storiesOf("Components/Organisms/Ripe Image Zoom Hover", module)
     .addDecorator(withKnobs)
-    .add("RipeImageZoomHover", () => {
+    .add("Ripe Image Zoom Hover", () => {
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);

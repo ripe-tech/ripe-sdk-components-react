@@ -91,9 +91,9 @@ class Wrapper extends Component {
     }
 }
 
-storiesOf("Components/Organisms/RipeConfigurator", module)
+storiesOf("Components/Organisms/Ripe Configurator", module)
     .addDecorator(withKnobs)
-    .add("RipeConfigurator", () => {
+    .add("Ripe Configurator", () => {
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);

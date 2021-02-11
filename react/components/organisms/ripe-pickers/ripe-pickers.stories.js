@@ -26,8 +26,8 @@ const ripe = new Ripe("dummy", "cube", {
     }
 });
 
-storiesOf("Components/Organisms/RipePickers", module)
+storiesOf("Components/Organisms/Ripe Pickers", module)
     .addDecorator(withKnobs)
-    .add("RipePickers", () => {
+    .add("Ripe Pickers", () => {
         return <RipePickers ripe={ripe} />;
     });

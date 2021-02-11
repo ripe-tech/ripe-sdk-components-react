@@ -5,9 +5,9 @@ import { Ripe } from "ripe-sdk";
 
 import { RipePrice } from "./ripe-price";
 
-storiesOf("Components/Organisms/RipePrice", module)
+storiesOf("Components/Organisms/Ripe Price", module)
     .addDecorator(withKnobs)
-    .add("RipePrice", () => {
+    .add("Ripe Price", () => {
         const brand = text("Brand", "dummy");
         const model = text("Model", "cube");
         const version = number("Version", 52);

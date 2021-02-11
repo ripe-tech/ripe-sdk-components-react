@@ -4,7 +4,7 @@ import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
 
 import { RipeImageZoom } from "./ripe-image-zoom";
 
-storiesOf("Organisms", module)
+storiesOf("Components/Organisms/RipeImageZoom", module)
     .addDecorator(withKnobs)
     .add("RipeImageZoom", () => {
         const brand = text("Brand", "dummy");

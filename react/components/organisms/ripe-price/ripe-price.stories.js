@@ -5,7 +5,7 @@ import { Ripe } from "ripe-sdk";
 
 import { RipePrice } from "./ripe-price";
 
-storiesOf("Organisms", module)
+storiesOf("Components/Organisms/RipePrice", module)
     .addDecorator(withKnobs)
     .add("RipePrice", () => {
         const brand = text("Brand", "dummy");

@@ -4,7 +4,7 @@ import { withKnobs, text, number } from "@storybook/addon-knobs";
 
 import { Loader } from "./loader";
 
-storiesOf("Atoms", module)
+storiesOf("Components/Atoms/Loader", module)
     .addDecorator(withKnobs)
     .add("Loader", () => {
         const loader = text("Loader", "ball-pulse");

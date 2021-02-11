@@ -5,7 +5,7 @@ import { Ripe } from "ripe-sdk";
 
 import { RipeImage } from "./ripe-image";
 
-storiesOf("Organisms", module)
+storiesOf("Components/Organisms/RipeImage", module)
     .addDecorator(withKnobs)
     .add("RipeImage", () => {
         const brand = text("Brand", "dummy");

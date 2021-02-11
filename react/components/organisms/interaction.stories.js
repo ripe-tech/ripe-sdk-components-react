@@ -8,7 +8,7 @@ import { RipeImage } from "./ripe-image";
 import { RipePrice } from "./ripe-price";
 import { RipePickers } from "./ripe-pickers";
 
-storiesOf("Organisms", module)
+storiesOf("Components/Organisms/Interaction", module)
     .addDecorator(withKnobs)
     .add("Interaction", () => {
         const brand = select(

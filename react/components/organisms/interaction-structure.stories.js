@@ -105,7 +105,7 @@ class Wrapper extends Component {
     }
 }
 
-storiesOf("Organisms", module)
+storiesOf("Components/Organisms/Interaction Structure", module)
     .addDecorator(withKnobs)
     .add("Interaction Structure", () => {
         const brand = select(

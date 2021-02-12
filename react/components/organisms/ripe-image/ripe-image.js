@@ -439,7 +439,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             curve: this.props.curve
         });
 
-        this.onImageError = this.image.bind("error", () => this.onError());
+        this.onImageError = this.image.bind("error", () => this._onError());
 
         // only updates if the SDK configuration is not empty
         if (this.state.ripeData.brand) {

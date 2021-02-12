@@ -199,16 +199,16 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             this.setState({ loading: true }, () => this.props.onLoading());
         });
 
-        this.state.ripeData.bind("selected_part", part => {
+        this.onSelectedPartEvent = this.state.ripeData.bind("selected_part", part => {
             if (this.state.selectedPartData === part) return;
             this.setState({ selectedPartData: part }, () => this.props.onUpdateSelectedPart(part));
         });
 
-        this.configurator.bind("changed_frame", frame => {
+        this.onChangedFrame = this.configurator.bind("changed_frame", frame => {
             this.setState({ frameData: frame }, () => this.props.onUpdateFrame(frame));
         });
 
-        this.configurator.bind("loaded", () => {
+        this.onConfiguratorLoaded = this.configurator.bind("loaded", () => {
             const frame = `${this.configurator.view}-${this.configurator.position}`;
 
             this.setState({ frameData: frame, loading: false }, () => {
@@ -217,11 +217,11 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             });
         });
 
-        this.configurator.bind("not_loaded", () => {
+        this.onConfiguratorNotLoaded = this.configurator.bind("not_loaded", () => {
             this.setState({ loading: false }, () => this.props.onLoaded());
         });
 
-        this.configurator.bind("highlighted_part", part => {
+        this.onHighlightedPart = this.configurator.bind("highlighted_part", part => {
             if (this.state.highlightedPartData === part) return;
             this.setState({ highlightedPartData: part }, () =>
                 this.props.onUpdateHighlightedPart(part)
@@ -253,6 +253,18 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
     }
 
     async componentWillUnmount() {
+        if (this.configurator && this.onHighlightedPart) {
+            this.configurator.unbind("highlighted_part", this.onHighlightedPart);
+        }
+        if (this.configurator && this.onConfiguratorNotLoaded) {
+            this.configurator.unbind("not_loaded", this.onConfiguratorNotLoaded);
+        }
+        if (this.configurator && this.onConfiguratorLoaded) {
+            this.configurator.unbind("loaded", this.onConfiguratorLoaded);
+        }
+        if (this.configurator && this.onChangedFrame) {
+            this.configurator.unbind("changed_frame", this.onChangedFrame);
+        }
         if (this.configurator) await this.state.ripeData.unbindConfigurator(this.configurator);
         if (this.onPreConfigEvent && this.state.ripeData) {
             this.state.ripeData.unbind("pre_config", this.onPreConfigEvent);

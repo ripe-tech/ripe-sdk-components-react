@@ -250,7 +250,11 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             /**
              * Style to be applied to the image, used for zoom application.
              */
-            style: PropTypes.object
+            style: PropTypes.object,
+            /**
+             * Callback called when an error occurs while loading the image.
+             */
+            onError: PropTypes.func
         };
     }
 
@@ -308,7 +312,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             offsets: null,
             curve: null,
             name: null,
-            style: {}
+            style: {},
+            onError: () => {}
         };
     }
 
@@ -434,6 +439,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             curve: this.props.curve
         });
 
+        this.onImageError = this.image.bind("error", () => this.onError());
+
         // only updates if the SDK configuration is not empty
         if (this.state.ripeData.brand) {
             await this.image.update({
@@ -467,6 +474,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
     }
 
     async componentWillUnmount() {
+        if (this.image && this.onImageError) this.image.unbind("error", this.onImageError);
         if (this.image) await this.state.ripeData.unbindImage(this.image);
         this.image = null;
     }
@@ -585,6 +593,10 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
 
     _onLoaded() {
         this.setState({ loading: false }, () => this.props.onLoaded());
+    }
+
+    _onError() {
+        this.props.onError();
     }
 
     render() {

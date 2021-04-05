@@ -507,10 +507,10 @@ export const LogicMixin = superclass =>
                 model: config.model !== previous.model ? config.model : undefined,
                 version: config.version !== previous.version ? config.version : undefined,
                 currency: config.currency !== previous.currency ? config.currency : undefined,
-                parts: this.parts,
-                initials: this.initials,
-                engraving: this.engraving,
-                initialsExtra: this.initialsExtra
+                parts: this.props.parts,
+                initials: this.props.initials,
+                engraving: this.props.engraving,
+                initialsExtra: this.props.initialsExtra
             });
         }
 

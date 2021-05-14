@@ -7,7 +7,7 @@ module.exports = {
         filename: "ripe-sdk-components-react.min.js?[fullhash]",
         library: "RipeSdkComponentsReact",
         libraryTarget: "umd",
-        publicPath: "/"
+        publicPath: "/dist/"
     },
     devServer: {
         compress: false,

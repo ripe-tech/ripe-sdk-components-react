@@ -1,7 +1,13 @@
+const path = require("path");
+
 module.exports = {
     entry: "./index.js",
     output: {
-        library: "RipeSdkComponentsReact"
+        path: path.resolve(__dirname, "dist"),
+        filename: "ripe-sdk-components-react.min.js?[fullhash]",
+        library: "RipeSdkComponentsReact",
+        libraryTarget: "umd",
+        publicPath: "/"
     },
     devServer: {
         compress: false,

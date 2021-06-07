@@ -60,11 +60,6 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              * The format of the configurator image, (eg: png, jpg, svg, etc.).
              */
             format: PropTypes.string,
-
-            /**
-             * Style to be applied to the configurator.
-             */
-            style: PropTypes.object,
             /**
              * Callback called when the frame in the configurator is changed,
              * both by the user dragging the configurator or when a new
@@ -80,7 +75,11 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
              * normally with a mouse hover of by changing the prop. Only functional
              * when masks are enabled.
              */
-            onUpdateHighlightedPart: PropTypes.func
+            onUpdateHighlightedPart: PropTypes.func,
+            /**
+             * Style to be applied to the configurator.
+             */
+            style: PropTypes.object
         };
     }
 
@@ -97,10 +96,10 @@ export class RipeConfigurator extends mix(Component).with(LogicMixin) {
             duration: null,
             animation: null,
             format: null,
-            style: {},
             onUpdateFrame: frame => {},
             onUpdateSelectedPart: part => {},
-            onUpdateHighlightedPart: part => {}
+            onUpdateHighlightedPart: part => {},
+            style: {}
         };
     }
 

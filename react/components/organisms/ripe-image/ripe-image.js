@@ -248,13 +248,13 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             name: PropTypes.string,
             /**
-             * Style to be applied to the image, used for zoom application.
-             */
-            style: PropTypes.object,
-            /**
              * Callback called when an error occurs while loading the image.
              */
-            onError: PropTypes.func
+            onError: PropTypes.func,
+            /**
+             * Style to be applied to the image, used for zoom application.
+             */
+            style: PropTypes.object
         };
     }
 
@@ -312,8 +312,8 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
             offsets: null,
             curve: null,
             name: null,
-            style: {},
-            onError: () => {}
+            onError: () => {},
+            style: {}
         };
     }
 

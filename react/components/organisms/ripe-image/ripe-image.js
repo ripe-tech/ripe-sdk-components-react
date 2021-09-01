@@ -384,11 +384,11 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
     async componentDidMount() {
         this.props.onLoading();
 
-        if (this.state.ripeData) this.state.ripeData.bind("ready", this._setupImage)
+        if (this.state.ripeData) this.state.ripeData.bind("ready", this._setupImage);
 
         await this.setupRipe();
 
-        if (this.state.ripeData.loadedConfig) this._setupImage()
+        if (this.state.ripeData.loadedConfig) this._setupImage();
     }
 
     async componentDidUpdate(prevProps) {
@@ -483,7 +483,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
                 initialsExtra: this.state.initialsExtraData || {}
             });
         }
-    }
+    };
 
     /**
      * Verifies if values changed an, if so, updates

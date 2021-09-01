@@ -384,8 +384,42 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
     async componentDidMount() {
         this.props.onLoading();
 
+        if (this.state.ripeData) this.state.ripeData.bind("ready", this._setupImage)
+
         await this.setupRipe();
 
+        if (this.state.ripeData.loadedConfig) this._setupImage()
+    }
+
+    async componentDidUpdate(prevProps) {
+        await this._componentDidUpdate(prevProps);
+
+        if (!this.image) return;
+
+        if (prevProps.size !== this.props.size) {
+            this.setState({ loading: true });
+            this.image.resize(this.props.size);
+        }
+        if (prevProps.frame !== this.props.frame) {
+            this.setState({ loading: true });
+            this.image.setFrame(this.props.frame);
+        }
+        if (prevProps.showInitials !== this.props.showInitials) {
+            this.image.setShowInitials(this.props.showInitials);
+        }
+        if (prevProps.initialsBuilder !== this.props.initialsBuilder) {
+            this.image.setInitialsBuilder(this.props.initialsBuilder);
+        }
+        await this._updateImage(this.props, prevProps);
+    }
+
+    async componentWillUnmount() {
+        if (this.image && this.onImageError) this.image.unbind("error", this.onImageError);
+        if (this.image) await this.state.ripeData.unbindImage(this.image);
+        this.image = null;
+    }
+
+    _setupImage = async () => {
         this.image = this.state.ripeData.bindImage(this.imageRef, {
             frame: this.props.frame,
             size: this.props.size || undefined,
@@ -449,34 +483,6 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
                 initialsExtra: this.state.initialsExtraData || {}
             });
         }
-    }
-
-    async componentDidUpdate(prevProps) {
-        await this._componentDidUpdate(prevProps);
-
-        if (!this.image) return;
-
-        if (prevProps.size !== this.props.size) {
-            this.setState({ loading: true });
-            this.image.resize(this.props.size);
-        }
-        if (prevProps.frame !== this.props.frame) {
-            this.setState({ loading: true });
-            this.image.setFrame(this.props.frame);
-        }
-        if (prevProps.showInitials !== this.props.showInitials) {
-            this.image.setShowInitials(this.props.showInitials);
-        }
-        if (prevProps.initialsBuilder !== this.props.initialsBuilder) {
-            this.image.setInitialsBuilder(this.props.initialsBuilder);
-        }
-        await this._updateImage(this.props, prevProps);
-    }
-
-    async componentWillUnmount() {
-        if (this.image && this.onImageError) this.image.unbind("error", this.onImageError);
-        if (this.image) await this.state.ripeData.unbindImage(this.image);
-        this.image = null;
     }
 
     /**

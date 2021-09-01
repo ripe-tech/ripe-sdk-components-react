@@ -60,7 +60,7 @@
         "prop-types": "^15.7.2",
         "react": "^16.14.0",
         "react-dom": "^16.14.0",
-        "ripe-sdk": "^1.22.0",
+        "ripe-sdk": "^2.6.0",
         "yonius": "^0.5.7"
     },
     "devDependencies": {

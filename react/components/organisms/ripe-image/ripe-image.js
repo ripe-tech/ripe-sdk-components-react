@@ -140,7 +140,7 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             initialsAlgorithm: PropTypes.string,
             /**
-             * The background color to be used in the generation of the antialiasing
+             * The background color to be used in the generation of the anti-aliasing
              * (defaults to '000000').
              */
             initialsBlendColor: PropTypes.string,
@@ -161,19 +161,19 @@ export class RipeImage extends mix(Component).with(LogicMixin) {
              */
             initialsInclusion: PropTypes.array,
             /**
-             * Overrides the profile's rotation angle, in degrees, to be applied to image.
+             * Overrides the profile's rotation angle, in degrees, to be applied to the initials image.
              */
             initialsImageRotation: PropTypes.number,
             /**
-             * Flip the image around the X axis.
+             * Flip the initials image around the X axis.
              */
             initialsImageFlip: PropTypes.bool,
             /**
-             * Mirror the image around the Y axis.
+             * Mirror the initials image around the Y axis.
              */
             initialsImageMirror: PropTypes.bool,
             /**
-             * Displays the Debug information box.
+             * Displays the debug information box.
              */
             debug: PropTypes.bool,
             /**

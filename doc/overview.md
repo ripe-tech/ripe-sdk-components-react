@@ -454,7 +454,7 @@ The zoom value is in percentage, and will not go under the `10%` value, which is
 To allow a more interactive experience with zoom, it is possible to use the `RipeImageZoomHover`, which applies a given zoom value to the image when hovering above it, centering it one the mouse position.
 It is also possible to enable the scroll wheel to increase and decrease the zoom value.
 
-The image with zoom can receive the same parameters from `ripe-image-zoom` as well as the following parameters:
+The image with zoom can receive the same parameters from `ripe-image` as well as the following parameters:
 
 | Prop              | Type      | Required | Description                                                                                      |
 | ----------------- | --------- | -------- | ------------------------------------------------------------------------------------------------ |

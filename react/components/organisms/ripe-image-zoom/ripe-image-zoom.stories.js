@@ -1,6 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
+import { Ripe } from "ripe-sdk";
 
 import { RipeImageZoom } from "./ripe-image-zoom";
 
@@ -26,6 +27,7 @@ storiesOf("Components/Organisms/Ripe Image Zoom", module)
                 }
             }
         };
+        const ripe = new Ripe();
 
         return (
             <RipeImageZoom
@@ -38,6 +40,8 @@ storiesOf("Components/Organisms/Ripe Image Zoom", module)
                 crop={crop}
                 showInitials={showInitials}
                 initialsGroup={"main"}
+                ripe={ripe}
+                config={true}
                 state={state}
                 zoom={zoom}
                 pivot={{ x: pivotX, y: pivotY }}

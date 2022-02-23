@@ -1,6 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs, text, number, boolean } from "@storybook/addon-knobs";
+import { Ripe } from "ripe-sdk";
 
 import { RipeImageZoomHover } from "./ripe-image-zoom-hover";
 
@@ -29,6 +30,7 @@ storiesOf("Components/Organisms/Ripe Image Zoom Hover", module)
                 }
             }
         };
+        const ripe = new Ripe();
 
         return (
             <RipeImageZoomHover
@@ -41,6 +43,8 @@ storiesOf("Components/Organisms/Ripe Image Zoom Hover", module)
                 crop={crop}
                 showInitials={showInitials}
                 initialsGroup={"main"}
+                ripe={ripe}
+                config={true}
                 state={state}
                 zoom={zoom}
                 maxZoom={maxZoom}

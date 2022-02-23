@@ -11,11 +11,8 @@ module.exports = {
     },
     devServer: {
         compress: false,
-        port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
-        stats: "minimal",
         hot: true,
-        historyApiFallback: true,
-        publicPath: "/"
+        historyApiFallback: true
     },
     module: {
         rules: [
@@ -43,7 +40,7 @@ module.exports = {
                 use: [
                     {
                         loader: "babel-loader",
-                        query: {
+                        options: {
                             presets: ["@babel/preset-env", "@babel/preset-react"],
                             plugins: [
                                 "@babel/plugin-proposal-class-properties",
@@ -55,32 +52,26 @@ module.exports = {
                                 ]
                             ]
                         }
-                    },
-                    {
-                        loader: "eslint-loader"
                     }
                 ]
             },
             {
                 test: /\.(png|jpg|gif|svg|ico)$/,
-                loader: "file-loader",
-                options: {
-                    name: (path, query) => {
-                        if (process.env.NODE_ENV === "development") {
-                            return "[path][name].[ext]?[fullhash]";
-                        }
-                        return "[contenthash].[ext]";
-                    },
-                    esModule: false
-                }
+                type: "asset/inline"
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
-                loader: "file-loader",
-                options: {
-                    esModule: false
-                }
+                resourceQuery: /raw/,
+                type: "asset/source"
             }
         ]
+    },
+    resolve: {
+        fallback: {
+            fs: false,
+            path: false,
+            http: false,
+            https: false,
+            process: false
+        }
     }
 };

@@ -22,7 +22,7 @@ config.module.rules.push(
         use: [
             {
                 loader: "babel-loader",
-                query: {
+                options: {
                     presets: [
                         [
                             "@babel/preset-env",

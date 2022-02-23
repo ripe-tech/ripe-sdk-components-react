@@ -1,8 +1,5 @@
 module.exports = {
     styleguideDir: "dist/styleguide",
-    webpackConfig: Object.assign({}, require("./webpack.config"), {
-        externals: {}
-    }),
     sections: [
         {
             name: "Introduction",

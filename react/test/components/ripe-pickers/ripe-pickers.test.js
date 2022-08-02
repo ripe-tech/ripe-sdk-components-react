@@ -1,14 +1,11 @@
-import "../../base";
 import React from "react";
 import assert from "assert";
 import sinon from "sinon";
-import { mount } from "enzyme";
-
+import { render, waitFor } from "@testing-library/react";
 import { Ripe } from "ripe-sdk";
 
-import { TEST_TIMEOUT } from "../../config";
-
 import { RipePickers } from "../../../components";
+import { TEST_TIMEOUT } from "../../config";
 
 const _parts = {
     side: {
@@ -101,22 +98,29 @@ describe("RipePickers", function() {
         });
 
         const onLoading = sinon.fake();
-        const component = mount(<RipePickers ripe={ripeInstance} onLoading={onLoading} />);
+        const component = render(<RipePickers ripe={ripeInstance} onLoading={onLoading} />);
 
         assert.strictEqual(onLoading.called, true);
 
-        await component.instance().componentDidMount();
         await ripeInstance.isReady();
         ripeInstance.setChoices(_choices);
 
-        component.update();
+        // waits for the component to rerender and re-calculate
+        // the picker options
+        await waitFor(() => component.getByText("Side"));
 
-        assert.strictEqual(component.find(".select-parts").exists(), true);
-        assert.strictEqual(component.find(".select-materials").exists(), true);
-        assert.strictEqual(component.find(".select-colors").exists(), true);
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 1);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 1);
+        assert.strictEqual(component.container.getElementsByClassName("select-parts").length, 1);
+        assert.strictEqual(
+            component.container.getElementsByClassName("select-materials").length,
+            1
+        );
+        assert.strictEqual(component.container.getElementsByClassName("select-colors").length, 1);
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            1
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 1);
     });
 
     it("should sync selects options", async () => {
@@ -124,61 +128,78 @@ describe("RipePickers", function() {
             version: 52,
             parts: _parts
         });
+        const ref = React.createRef();
         const onLoading = sinon.fake();
-        const component = mount(<RipePickers ripe={ripeInstance} onLoading={onLoading} />);
+        const component = render(
+            <RipePickers ripe={ripeInstance} onLoading={onLoading} ref={ref} />
+        );
 
         assert.strictEqual(onLoading.called, true);
 
-        await component.instance().componentDidMount();
         await ripeInstance.isReady();
         ripeInstance.setChoices(_choices);
 
-        component.update();
+        // waits for the component to rerender and re-calculate
+        // the picker options
+        await waitFor(() => component.getByText("Side"));
 
-        await component.instance()._onSelectPartChange("side");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 1);
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            1
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 1);
 
-        await component.instance()._onSelectPartChange("patch");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 2);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 3);
+        await ref.current._onSelectPartChange("patch");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            2
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 3);
 
-        await component.instance()._onSelectPartChange("top0_bottom");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 1);
+        await ref.current._onSelectPartChange("top0_bottom");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            4
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 1);
 
-        await component.instance()._onSelectPartChange("side");
-        await component.instance()._onSelectMaterialChange("crocodile_cbe");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 3);
+        await ref.current._onSelectPartChange("side");
+        await ref.current._onSelectMaterialChange("crocodile_cbe");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            4
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 3);
 
-        await component.instance()._onSelectPartChange("side");
-        await component.instance()._onSelectMaterialChange("leather_cbe");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 5);
+        await ref.current._onSelectPartChange("side");
+        await ref.current._onSelectMaterialChange("leather_cbe");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            4
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 5);
 
-        await component.instance()._onSelectPartChange("top0_bottom");
-        await component.instance()._onSelectMaterialChange("leather_cbe");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 5);
+        await ref.current._onSelectPartChange("top0_bottom");
+        await ref.current._onSelectMaterialChange("leather_cbe");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            4
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 5);
 
-        await component.instance()._onSelectPartChange("top0_bottom");
-        await component.instance()._onSelectMaterialChange("suede_cbe");
-        component.update();
-        assert.strictEqual(component.find(".select-parts").find("option").length, 4);
-        assert.strictEqual(component.find(".select-materials").find("option").length, 4);
-        assert.strictEqual(component.find(".select-colors").find("option").length, 4);
+        await ref.current._onSelectPartChange("top0_bottom");
+        await ref.current._onSelectMaterialChange("suede_cbe");
+        assert.strictEqual(component.container.querySelectorAll(".select-parts option").length, 4);
+        assert.strictEqual(
+            component.container.querySelectorAll(".select-materials option").length,
+            4
+        );
+        assert.strictEqual(component.container.querySelectorAll(".select-colors option").length, 4);
     });
 });

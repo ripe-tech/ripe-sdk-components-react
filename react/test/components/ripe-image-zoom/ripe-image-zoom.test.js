@@ -1,23 +1,22 @@
-import "../../base";
 import React from "react";
 import assert from "assert";
 import sinon from "sinon";
-import { mount } from "enzyme";
-
-import { TEST_TIMEOUT } from "../../config";
+import { render } from "@testing-library/react";
+import { Ripe } from "ripe-sdk";
 
 import { RipeImageZoom } from "../../../components";
+import { TEST_TIMEOUT } from "../../config";
 
 describe("RipeImageZoom", function() {
     this.timeout(TEST_TIMEOUT);
 
     it("should instantiate the component", () => {
+        const ripeInstance = new Ripe();
         const onLoading = sinon.fake();
-        mount(
+
+        render(
             <RipeImageZoom
-                brand={"dummy"}
-                model={"cube"}
-                version={52}
+                ripe={ripeInstance}
                 size={1000}
                 zoom={100}
                 pivot={{ x: 0, y: 0 }}

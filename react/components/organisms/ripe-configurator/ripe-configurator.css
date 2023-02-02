@@ -9,6 +9,11 @@
 
 .ripe-configurator > .configurator-wrapper.loading {
     opacity: 0;
+    -o-opacity: 0;
+    -ms-opacity: 0;
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    -webkit-opacity: 0;
 }
 
 .ripe-configurator > .configurator-wrapper .configurator {
